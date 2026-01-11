@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <EditText
+        android:id="@+id/inputNama"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Nama"
+        android:inputType="textPersonName" />
+    <EditText
+        android:id="@+id/nohp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:inputType="phone"
+        android:maxLength="15" />
+    <EditText
+        android:id="@+id/inputUsername"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Username"
+        android:inputType="textPersonName" />
+
+    <EditText
+        android:id="@+id/inputPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Password"
+        android:inputType="textPassword" />
+
+    <RadioGroup
+        android:id="@+id/radioRole"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingTop="8dp">
+
+        <RadioButton
+            android:id="@+id/radioTeknisi"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="teknisi" />
+
+        <RadioButton
+            android:id="@+id/radioMarketing"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="marketing" />
+
+        <RadioButton
+            android:id="@+id/radioReseller"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="reseller" />
+        <TextView
+            android:id="@+id/tvAreaLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Pilih Area:"
+            android:paddingTop="12dp"
+            android:textStyle="bold" />
+
+        <RadioGroup
+            android:id="@+id/radioArea"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+    </RadioGroup>
+</LinearLayout>

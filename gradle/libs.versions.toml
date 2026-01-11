@@ -1,0 +1,54 @@
+[versions]
+agp = "8.13.2"
+junit = "4.13.2"
+junitVersion = "1.2.1"
+espressoCore = "3.6.1"
+appcompat = "1.7.1"
+material = "1.12.0"
+activity = "1.10.1"
+constraintlayout = "2.2.1"
+okhttp = "4.12.0"
+osmdroidAndroid = "6.1.20"
+playServicesLocation = "21.3.0"
+gson = "2.13.1"
+exoplayer = "2.19.1"
+glide = "5.0.0-rc01"
+compiler = "5.0.0-rc01"
+lottie = "6.6.6"
+duitkuAndroidSdk = "1.0.14"
+zxingAndroidEmbedded = "4.3.0"
+androidnetworktools = "0.4.5.3"
+androidnetworktoolsVersion = "0.4.5.6"
+nettyAll = "5.0.0.Alpha2"
+googleServices = "4.4.4"
+firebaseMessaging = "25.0.1"
+comGoogleGmsGoogleServicesGradlePlugin = "4.4.4"
+
+[libraries]
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
+espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
+constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
+okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
+osmdroid-android = { group = "org.osmdroid", name = "osmdroid-android", version.ref = "osmdroidAndroid" }
+play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
+gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
+exoplayer = { group = "com.google.android.exoplayer", name = "exoplayer", version.ref = "exoplayer" }
+glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
+compiler = { group = "com.github.bumptech.glide", name = "compiler", version.ref = "compiler" }
+lottie = { group = "com.airbnb.android", name = "lottie", version.ref = "lottie" }
+duitku-android-sdk = { group = "com.duitku", name = "duitku-android-sdk", version.ref = "duitkuAndroidSdk" }
+zxing-android-embedded = { group = "com.journeyapps", name = "zxing-android-embedded", version.ref = "zxingAndroidEmbedded" }
+androidnetworktools = { group = "com.github.stealthcopter", name = "AndroidNetworkTools", version.ref = "androidnetworktools" }
+stealthcopter-androidnetworktools = { group = "com.github.stealthcopter", name = "AndroidNetworkTools", version.ref = "androidnetworktoolsVersion" }
+netty-all = { group = "io.netty", name = "netty-all", version.ref = "nettyAll" }
+google-services = { group = "com.google.gms", name = "google-services", version.ref = "googleServices" }
+firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging", version.ref = "firebaseMessaging" }
+com-google-gms-google-services-gradle-plugin = { group = "com.google.gms.google-services", name = "com.google.gms.google-services.gradle.plugin", version.ref = "comGoogleGmsGoogleServicesGradlePlugin" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+

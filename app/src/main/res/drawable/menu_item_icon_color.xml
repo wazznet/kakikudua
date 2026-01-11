@@ -1,0 +1,6 @@
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Warna ikon saat dipilih -->
+    <item android:state_checked="true" android:color="@color/selected_item_color" />
+    <!-- Warna ikon default -->
+    <item android:color="@color/design_default_color_background" />
+</selector>

@@ -1,0 +1,123 @@
+<!-- res/layout/dialog_pelanggan.xml -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/cr8bd9d9d9"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <ImageView
+        android:id="@+id/imageView10"
+        android:background="@drawable/edittext_border_blue"
+
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <TextView
+
+        android:id="@+id/type"
+
+        android:layout_width="match_parent"
+        android:layout_height="38dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/edittext_border_blue"
+        android:drawableStart="@drawable/baseline_library_books_24"
+        android:drawablePadding="10dp"
+        android:ems="10"
+        android:hint="nama"
+        android:inputType="text"
+        android:padding="10dp"
+        android:shadowRadius="20"
+
+        android:text="TextView"
+        android:textColor="#000000"
+        android:textColorHint="#000000"
+        android:textColorLink="#000000" />
+
+    <TextView
+        android:id="@+id/typedata"
+        android:layout_width="match_parent"
+        android:layout_height="38dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/edittext_border_blue"
+        android:drawableStart="@drawable/arrow_forward"
+        android:drawablePadding="10dp"
+        android:ems="10"
+        android:hint="nama"
+        android:inputType="text"
+        android:padding="10dp"
+        android:shadowRadius="20"
+
+        android:text="TextView"
+        android:textColor="#000000"
+        android:textColorHint="#000000"
+        android:textColorLink="#000000"/>
+
+    <TextView
+        android:id="@+id/angggaran"
+        android:layout_width="match_parent"
+        android:layout_height="38dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/edittext_border_blue"
+        android:drawableStart="@drawable/arrow_forward"
+        android:drawablePadding="10dp"
+        android:ems="10"
+        android:hint="nama"
+        android:inputType="text"
+        android:padding="10dp"
+        android:shadowRadius="20"
+
+        android:text="TextView"
+        android:textColor="#000000"
+        android:textColorHint="#000000"
+        android:textColorLink="#000000" />
+
+    <TextView
+        android:id="@+id/tanggal"
+        android:layout_width="match_parent"
+        android:layout_height="38dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/edittext_border_blue"
+        android:drawableStart="@drawable/baseline_date_range_24"
+        android:drawablePadding="10dp"
+        android:ems="10"
+        android:hint="nama"
+        android:inputType="text"
+        android:padding="10dp"
+        android:shadowRadius="20"
+
+        android:text="TextView"
+        android:textColor="#000000"
+        android:textColorHint="#000000"
+        android:textColorLink="#000000" />
+
+    <TextView
+        android:id="@+id/keterangan"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/edittext_border_blue"
+        android:drawablePadding="10dp"
+        android:ems="10"
+        android:hint="nama"
+        android:inputType="text"
+        android:padding="10dp"
+        android:shadowRadius="20"
+
+        android:text="TextView"
+        android:textColor="#000000"
+        android:textColorHint="#000000"
+        android:textColorLink="#000000" />
+
+    <Button
+        android:id="@+id/btnKembali"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_marginTop="20dp"
+        android:padding="8dp"
+        android:text="Kembali" />
+</LinearLayout>

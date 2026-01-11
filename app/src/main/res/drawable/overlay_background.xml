@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Darken Background -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="#88000000" />
+        </shape>
+    </item>
+
+    <!-- Transparent Circle -->
+    <item>
+        <shape android:shape="oval">
+            <solid android:color="@android:color/transparent" />
+            <size
+                android:width="200dp"
+                android:height="200dp" />
+        </shape>
+    </item>
+</layer-list>

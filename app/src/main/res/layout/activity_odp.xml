@@ -1,0 +1,78 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <org.osmdroid.views.MapView
+        android:id="@+id/mapView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:visibility="visible" />
+
+    <TextView
+        android:id="@+id/koordinatText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Koordinat: "
+        android:background="#AA000000"
+        android:textColor="#FFFFFF"
+        android:padding="8dp"
+        android:layout_alignParentBottom="true"/>
+
+    <Spinner
+        android:id="@+id/jalur"
+        android:layout_width="129dp"
+        android:layout_height="36dp"
+        android:layout_alignParentTop="true"
+        android:layout_margin="10dp"
+
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="127dp"
+
+        android:layout_marginBottom="10dp"
+        android:layout_toStartOf="@+id/btnTambahJalur"
+        android:background="@drawable/cr25bffffff"
+        android:backgroundTint="@color/background"
+        android:inputType="text"
+        android:popupBackground="@android:drawable/editbox_background"
+        android:shadowRadius="20"
+        android:textColor="#000000"
+        android:textColorHint="#000000" />
+
+    <ImageView
+        android:id="@+id/backtolist"
+        android:layout_width="32dp"
+        android:layout_height="33dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="18dp"
+        android:layout_marginTop="18dp"
+        app:srcCompat="@drawable/baseline_arrow_back_24" />
+
+    <Button
+        android:id="@+id/btnTambahJalur"
+        android:layout_width="wrap_content"
+        android:layout_height="36dp"
+        android:layout_below="@+id/btnTambahODP"
+        android:layout_margin="10dp"
+        android:layout_marginTop="-36dp"
+        android:background="@drawable/circle_shape"
+
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:text="Tambah Jalur"
+        android:textColor="@color/white"/>
+
+    <Button
+        android:id="@+id/btnTambahODP"
+        android:layout_width="wrap_content"
+        android:layout_height="36dp"
+        android:layout_below="@+id/jalur"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="10dp"
+        android:background="@drawable/circle_shape"
+        android:text="Tambah ODP"
+        android:textColor="@color/white" />
+
+</RelativeLayout>

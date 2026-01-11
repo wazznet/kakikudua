@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-permission android:name="android.permission.NFC" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission
+        android:name="android.permission.ACCESS_NETWORK_STATE"
+        tools:ignore="CoarseFineLocation" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission
+        android:name="android.permission.ACCESS_FINE_LOCATION"
+        tools:ignore="CoarseFineLocation" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CAMERA" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_PHONE_CALL" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
+
+    <uses-feature
+        android:name="android.hardware.microphone"
+        android:required="true" />
+
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+
+    <uses-feature
+        android:name="android.hardware.nfc"
+        android:required="true" />
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.telephony"
+        android:required="false" />
+
+    <application
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:forceDarkAllowed="false"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:networkSecurityConfig="@xml/network_security_config"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.PenagihanWifi"
+        android:usesCleartextTraffic="true"
+        tools:targetApi="31">
+        <activity
+            android:name=".map.TambahJalurActivity"
+            android:exported="false" />
+        <activity
+            android:name=".map.TambahOdpActivity"
+            android:exported="false" />
+
+        <service
+            android:name=".MyFirebaseMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+        <activity
+            android:name=".halamanpelanggan.PelangganActivity2"
+            android:exported="false" />
+        <activity
+            android:name=".map.DetailOdpActivity"
+            android:exported="false" />
+        <activity
+            android:name=".map.MapJalurActivity"
+            android:exported="false" />
+        <activity
+            android:name=".map.ListOdpActivity"
+            android:exported="false" />
+        <activity
+            android:name=".map.LapanganActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:exported="false"
+            android:label="@string/title_activity_lapangan"
+            android:theme="@style/Theme.PenagihanWifi.Fullscreen" />
+        <activity
+            android:name=".mikrotik.Detail_Mikrotik_Activity"
+            android:exported="false" />
+        <activity
+            android:name=".mikrotik.TambahMikrotik"
+            android:exported="false" />
+        <activity
+            android:name=".bot.whatsappActivity"
+            android:exported="false" />
+        <activity
+            android:name=".dev.DevActivity"
+            android:exported="false" />
+        <activity
+            android:name=".bot.BotPenagihanActivity"
+            android:exported="false" />
+        <activity
+            android:name=".acs.AcskuActivity"
+            android:exported="false" />
+        <activity
+            android:name=".settings.SettingInfoActivity"
+            android:exported="false" />
+        <activity
+            android:name=".settings.SettingLainActivity"
+            android:exported="false" />
+        <activity
+            android:name=".settings.SettingSubActivity"
+            android:exported="false" />
+        <activity
+            android:name=".settings.SettingPaketActivity"
+            android:exported="false" />
+        <activity
+            android:name=".settings.SettingAreaActivity"
+            android:exported="false" />
+        <activity
+            android:name=".pembukuan.PembukuanTambahActivity"
+            android:exported="false" />
+        <activity
+            android:name=".pembukuan.PembukuanActivity"
+            android:exported="false" />
+        <activity
+            android:name=".settings.SettingsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".halamanpelanggan.pay.PayOnline"
+            android:exported="false" />
+        <activity
+            android:name=".halamanpelanggan.shop.ShopPlnpascaActivity"
+            android:exported="false" />
+        <activity
+            android:name=".halamanpelanggan.shop.ShopEmoneyActivity"
+            android:exported="false" />
+        <activity
+            android:name=".halamanpelanggan.shop.ShopGameActivity"
+            android:exported="false" />
+        <activity
+            android:name=".halamanpelanggan.shop.ShopPlnpraActivity"
+            android:exported="false" />
+        <activity
+            android:name=".halamanpelanggan.shop.ShopDataActivity"
+            android:exported="false" />
+        <activity
+            android:name=".halamanpelanggan.shop.ShopPulsaActivity"
+            android:exported="false" />
+        <activity
+            android:name=".lottie.LottieSuccessActivity"
+            android:exported="false" />
+        <activity
+            android:name=".halamanpelanggan.komplen.PelangganKomplenActivity"
+            android:exported="false" />
+        <activity
+            android:name=".halamanpelanggan.layanan.PelangganLayananActivity"
+            android:exported="false" />
+        <activity
+            android:name=".halamanpelanggan.mywifi.PelangganHostspotActivity"
+            android:exported="false" />
+        <activity
+            android:name=".halamanpelanggan.tv.PelangganTvActivity"
+            android:exported="false" />
+        <activity
+            android:name=".halamanpelanggan.paket.PelangganPaketActivity"
+            android:exported="false" />
+        <activity
+            android:name=".halamanpelanggan.shop.PelangganRiwayatActivity"
+            android:exported="false" />
+        <activity
+            android:name=".halamanpelanggan.tv.PlayerActivity"
+            android:configChanges="orientation|screenSize"
+            android:screenOrientation="landscape"
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
+        <activity
+            android:name=".halamanpelanggan.shop.PelangganPembelianActivity"
+            android:exported="false" />
+        <activity
+            android:name=".halamanpelanggan.tagihan.PelangganTagihanActivity"
+            android:exported="false" />
+        <activity
+            android:name=".halamanpelanggan.PelangganActivity"
+            android:exported="false" />
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
+        <activity
+            android:name=".LogoutActivity"
+            android:exported="false" />
+        <activity
+            android:name=".pembayaran.ManajemenPenagihan"
+            android:exported="false" />
+        <activity
+            android:name=".client.EditPelangganActivity"
+            android:exported="false" />
+        <activity
+            android:name=".map.OdpActivity"
+            android:exported="false" />
+        <activity
+            android:name=".komplen.KomplainActivity"
+            android:exported="false" />
+        <activity
+            android:name=".tools.AcsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".tools.TracerouteActivity"
+            android:exported="false" />
+        <activity
+            android:name=".client.DetailPelangganActivity"
+            android:exported="false" />
+        <activity
+            android:name=".tools.PingActivity"
+            android:exported="false" />
+        <activity
+            android:name=".map.MapActivity"
+            android:exported="false" />
+        <activity
+            android:name=".client.ClientActivity"
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
+        <activity
+            android:name=".psb.PsbActivity"
+            android:exported="false" />
+        <activity
+            android:name=".pembayaran.PembayaranActivity"
+            android:exported="false" />
+        <activity
+            android:name=".CsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".TeknisiActivity"
+            android:exported="false" />
+        <activity
+            android:name=".LoginActivity"
+            android:exported="false" />
+        <activity android:name=".MainActivity" />
+        <activity android:name=".halamanpelanggan.mywifi.PasswordActivity" /> <!-- Activity login sebagai launcher awal -->
+        <activity
+            android:name=".SplashScreenActivity"
+            android:exported="true">
+
+            <!-- App Links (HTTPS) untuk openapp -->
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="fufufafa.wazzapp.my.id"
+                    android:pathPattern="/openapp/.*"
+                    android:scheme="https" />
+            </intent-filter>
+
+            <!-- App Links (HTTPS) untuk pay -->
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="fufufafa.wazzapp.my.id"
+                    android:pathPattern="/pay/.*"
+                    android:scheme="https" />
+            </intent-filter>
+
+            <!-- Deep Link (Custom Scheme) -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="openapp"
+                    android:scheme="wazzapp" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="pay"
+                    android:scheme="wazzapp" />
+            </intent-filter>
+
+            <!-- Launcher -->
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>

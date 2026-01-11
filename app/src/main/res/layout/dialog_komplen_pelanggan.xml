@@ -1,0 +1,44 @@
+<!-- res/layout/dialog_pelanggan.xml -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/cr18bffffff"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <TextView
+        android:id="@+id/isikomplen"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:text="TextView"
+        android:textColor="#000000"
+        android:textSize="14sp" />
+
+    <Button
+        android:id="@+id/btnChat"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#4CAF50"
+        android:text="Chat Pelanggan"
+        android:textColor="#FFFFFF" />
+
+    <Button
+        android:id="@+id/btnLokasi"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:backgroundTint="#FFC107"
+        android:text="Loklasi Pelanggan"
+        android:textColor="#FFFFFF" />
+
+    <Button
+    android:id="@+id/btnselesai"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="10dp"
+    android:backgroundTint="#007FFF"
+    android:text="selesai"
+    android:textColor="#FFFFFF" />
+
+
+</LinearLayout>

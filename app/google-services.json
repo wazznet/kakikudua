@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "202457139017",
+    "project_id": "wazzapp-342e9",
+    "storage_bucket": "wazzapp-342e9.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:202457139017:android:56e37d16945ee9634afc98",
+        "android_client_info": {
+          "package_name": "com.wazzgroup.penagihanwifi"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAeprZx0ES7n62sioR-nC9wuvu7SJHt5aY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

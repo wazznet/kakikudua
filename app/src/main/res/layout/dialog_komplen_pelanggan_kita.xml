@@ -1,0 +1,42 @@
+<!-- res/layout/dialog_pelanggan.xml -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/cr18bffffff"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <TextView
+        android:id="@+id/isikomplen"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:text="TextView"
+        android:textColor="#000000"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/status"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:text="TextView"
+        android:textColor="#000000"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/tanggal_dibuat"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:text="TextView"
+        android:textColor="#000000"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/tanggal_selesai"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:text="TextView"
+        android:textColor="#000000"
+        android:textSize="14sp" />
+
+
+</LinearLayout>
