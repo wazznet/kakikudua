@@ -10,7 +10,11 @@
 
     <include
         android:id="@+id/include"
-        layout="@layout/lottie_success" />
+        layout="@layout/lottie_success"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -27,15 +31,36 @@
         app:layout_constraintVertical_bias="0.0">
 
 
+        <TextView
+            android:id="@+id/jalur"
+            android:layout_width="300dp"
+            android:layout_height="38dp"
+            android:layout_marginTop="24dp"
+            android:background="@drawable/edittext_border_blue"
+            android:drawableStart="@drawable/ic_arrow_right"
+
+            android:drawablePadding="10dp"
+            android:ems="10"
+            android:inputType="text"
+            android:padding="10dp"
+            android:shadowRadius="20"
+            android:text="Jalur"
+            android:textColor="#000000"
+            android:textColorHint="#000000"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <LinearLayout
             android:id="@+id/linearLayout"
             android:layout_width="300dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="16dp"
             android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toBottomOf="@+id/jalur">
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -273,6 +298,7 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <include
+        android:id="@+id/include2"
         layout="@layout/lottie_success"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

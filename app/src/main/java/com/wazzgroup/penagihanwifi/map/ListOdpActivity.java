@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AbsListView;
@@ -62,6 +63,7 @@ public class ListOdpActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         getWindow().getDecorView().setSystemUiVisibility(
                 View.SYSTEM_UI_FLAG_FULLSCREEN |
                         View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY |
@@ -70,42 +72,82 @@ public class ListOdpActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         EdgeToEdge.enable(this);
-        String json = getIntent().getStringExtra("odp");
-         o = new Gson().fromJson(json, lapangan.class);
 
+        // WAJIB DI AWAL
         setContentView(R.layout.activity_list_odp);
+
+        // AMBIL INTENT SEKALI
+        Intent intent = getIntent();
+
+        // TERIMA DATA JSON
+        String json = intent.getStringExtra("odp");
+        if (json != null) {
+            o = new Gson().fromJson(json, lapangan.class);
+        }
+
         ImageView kembali = findViewById(R.id.back2);
         kembali.setOnClickListener(v -> kembaliKeList());
+
         Button tambahodp = findViewById(R.id.tambahodp);
-        tambahodp.setOnClickListener(v -> tambahodpnya());
+        Button map = findViewById(R.id.map);
+
         listView = findViewById(R.id.listPelanggan);
         searchBox = findViewById(R.id.searchPelanggan);
         textView7 = findViewById(R.id.textView7);
-        Button map = findViewById(R.id.map);
+
+        // TOMBOL TAMBAH ODP
+        tambahodp.setOnClickListener(v -> {
+            String idOdp = intent.getStringExtra("id");
+            String nama = intent.getStringExtra("nama");
 
 
+            if (idOdp != null && !idOdp.trim().isEmpty()) {
+                Intent intent2 = new Intent(ListOdpActivity.this, TambahOdpActivity.class);
+                intent2.putExtra("idjalur", idOdp);
+                intent2.putExtra("nama", nama);
+                Log.d("ada", "idjalur: " + idOdp + ", nama: " + nama);
 
-        map.setOnClickListener(v -> {
-            Intent intent = new Intent(ListOdpActivity.this, MapJalurActivity.class);
-            intent.putExtra("map", new Gson().toJson(o));
-            startActivity(intent);
+                startActivity(intent2);
+
+            }else if (o != null && o.id != null) {
+                Intent intent2 = new Intent(ListOdpActivity.this, TambahOdpActivity.class);
+                intent2.putExtra("idjalur", o.id);
+                intent2.putExtra("nama", o.nama);
+                Log.d("tidak ada", "idjalur: " + o.id + ", nama: " + o.nama);
+
+                startActivity(intent2);
+            } else {
+                Toast.makeText(this, "ID ODP tidak ditemukan!", Toast.LENGTH_SHORT).show();
+            }
+
         });
+
+        // TOMBOL MAP
+        map.setOnClickListener(v -> {
+            Intent mapIntent = new Intent(ListOdpActivity.this, MapJalurActivity.class);
+            mapIntent.putExtra("map", new Gson().toJson(o));
+            startActivity(mapIntent);
+        });
+
         adapter = new LapanganAdapter(this, LapanganList);
         listView.setAdapter(adapter);
-        Intent intent = getIntent();
+
+        // LOGIC DATA
         String idOdp = intent.getStringExtra("id");
 
         if (idOdp != null && !idOdp.trim().isEmpty()) {
             String nama = intent.getStringExtra("nama");
-
             textView7.setText(nama);
             ambilDataPelanggan(currentStart, idOdp);
+
         } else if (o != null && o.id != null) {
             textView7.setText(o.nama);
             ambilDataPelanggan(currentStart, o.id);
+
         } else {
             Toast.makeText(this, "ID ODP tidak ditemukan!", Toast.LENGTH_SHORT).show();
         }
+
 
 
         searchBox.addTextChangedListener(new TextWatcher() {

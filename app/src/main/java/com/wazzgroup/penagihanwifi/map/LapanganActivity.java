@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -81,7 +82,11 @@ public class LapanganActivity extends AppCompatActivity {
         kembali.setOnClickListener(v -> kembaliKeList());
         Button map = findViewById(R.id.button3);
 
+        Button btnTambahJalur = findViewById(R.id.bttambahjalur);
 
+        btnTambahJalur.setOnClickListener(v -> {
+            showDialogTambahJalur();
+        });
 
         map.setOnClickListener(v -> {
             Intent intent = new Intent(LapanganActivity.this, MapActivity.class);
@@ -136,6 +141,78 @@ public class LapanganActivity extends AppCompatActivity {
             }
         });
 
+    }
+    private void showDialogTambahJalur() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Tambah Jalur Baru");
+
+        final EditText input = new EditText(this);
+        input.setHint("Masukkan Nama Jalur");
+        input.setPadding(20, 20, 20, 20);
+
+        builder.setView(input);
+
+        builder.setPositiveButton("Simpan", (dialog, which) -> {
+            String namaJalur = input.getText().toString().trim();
+
+            if (namaJalur.isEmpty()) {
+                Toast.makeText(this, "Nama jalur tidak boleh kosong", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            kirimJalurBaru(namaJalur);
+        });
+
+        builder.setNegativeButton("Batal", (dialog, which) -> dialog.cancel());
+
+        builder.show();
+    }
+    private void kirimJalurBaru(String namaJalur) {
+        OkHttpClient client = new OkHttpClient();
+        String iduserr = GlobalHelper.getIdUser(this);
+        RequestBody formBody = new FormBody.Builder()
+                .add("api", "tambah_jalur")
+                .add("user", iduserr) // ganti dengan user login jika perlu
+                .add("nama_jalur", namaJalur)
+                .build();
+
+        Request request = new Request.Builder()
+                .url(url)
+                .post(formBody)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                runOnUiThread(() -> Toast.makeText(LapanganActivity.this, "Gagal tambah jalur: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String result = response.body().string();
+
+                runOnUiThread(() -> {
+                    try {
+                        JSONObject obj = new JSONObject(result);
+                        String status = obj.getString("status");
+                        String message = obj.getString("message");
+
+                        if (status.equalsIgnoreCase("success")) {
+                            Toast.makeText(LapanganActivity.this, "Jalur berhasil ditambah", Toast.LENGTH_SHORT).show();
+
+                            Intent intent = getIntent();
+                            finish();
+                            startActivity(intent);
+                        } else {
+                            Toast.makeText(LapanganActivity.this, "Gagal: " + message, Toast.LENGTH_SHORT).show();
+                        }
+
+                    } catch (Exception e) {
+                        Toast.makeText(LapanganActivity.this, "Respon tidak valid", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
     }
     private void tampilkanDialogPilihan(lapangan p) {
         View dialogView = getLayoutInflater().inflate(R.layout.dialog_jalur, null);

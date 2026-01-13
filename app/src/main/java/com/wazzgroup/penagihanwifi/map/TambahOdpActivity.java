@@ -97,17 +97,25 @@ public class TambahOdpActivity extends AppCompatActivity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_tambah_odp);
-        ImageView kembali = findViewById(R.id.back);
-        kembali.setOnClickListener(v -> kembaliKeList());
         iduserr = GlobalHelper.getIdUser(this);
         spinnerType = findViewById(R.id.typeodp);
         spinnerPort = findViewById(R.id.port);
+        String idjalur = getIntent().getStringExtra("idjalur");
+        String namajalur = getIntent().getStringExtra("nama");
 
+        TextView namaText = findViewById(R.id.jalur);
+
+        if (namajalur != null) {
+            namaText.setText(namajalur);
+        } else {
+            namaText.setText("-");
+            Log.e("INTENT", "nama jalur null");
+        }
 // Spinner TYPE
         ArrayAdapter<String> adapterType = new ArrayAdapter<String>(
                 this,
                 android.R.layout.simple_spinner_item,
-                new String[]{"odp", "odc", "server", "spliter", "rasio"}
+                new String[]{"odp", "odc", "closure"}
         ) {
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
@@ -130,7 +138,7 @@ public class TambahOdpActivity extends AppCompatActivity {
         ArrayAdapter<String> adapterPort = new ArrayAdapter<String>(
                 this,
                 android.R.layout.simple_spinner_item,
-                new String[]{"2", "4", "8", "16", "32"}
+                new String[]{"0","2", "4", "8", "16", "32"}
         ) {
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
@@ -164,6 +172,9 @@ public class TambahOdpActivity extends AppCompatActivity {
 
         btnPilihLokasiOdp.setOnClickListener(v -> bukaDialogPilihLokasiODP());
 
+
+        ImageView kembali = findViewById(R.id.back);
+        kembali.setOnClickListener(v -> kembaliKeList(idjalur,namajalur));
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 100);
@@ -173,7 +184,7 @@ public class TambahOdpActivity extends AppCompatActivity {
 
 
 
-        btnKirim.setOnClickListener(v -> kirimData());
+        btnKirim.setOnClickListener(v -> kirimData(idjalur));
     }
 
     @Override
@@ -195,22 +206,7 @@ public class TambahOdpActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-        if (NfcAdapter.ACTION_TAG_DISCOVERED.equals(intent.getAction())) {
-            Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
-            if (tag != null) {
-                byte[] tagId = tag.getId();
-                StringBuilder sb = new StringBuilder();
-                for (byte b : tagId) {
-                    sb.append(String.format("%02X", b));
-                }
-                rfidId = sb.toString();
-                textRfid.setText("ID RFID: " + rfidId);
-            }
-        }
-    }
+
     @SuppressLint("ClickableViewAccessibility")
     private void bukaDialogPilihLokasi() {
         Dialog dialog = new Dialog(this);
@@ -455,21 +451,17 @@ public class TambahOdpActivity extends AppCompatActivity {
 
 
 
-    private void kirimData() {
-        int inttype = spinnerType.getSelectedItemPosition();
+    private void kirimData(String idjalur) {
 
-        String type = listId.get(inttype);
-        int intport = spinnerPort.getSelectedItemPosition();
-        String port = listId2.get(intport);
-
-
+        String type = spinnerType.getSelectedItem().toString();
+        String port = spinnerPort.getSelectedItem().toString();
 
         if (lokasiTerpilih == null) {
             Toast.makeText(this, "Silakan pilih lokasi di peta terlebih dahulu", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        if (idOdpDipilih.isEmpty()) {
+        if (idOdpDipilih == null || idOdpDipilih.isEmpty()) {
             Toast.makeText(this, "Silakan pilih ODP terlebih dahulu", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -478,6 +470,7 @@ public class TambahOdpActivity extends AppCompatActivity {
             Toast.makeText(this, "Silakan pilih area", Toast.LENGTH_SHORT).show();
             return;
         }
+
         if (port.equals("Pilih paket")) {
             Toast.makeText(this, "Silakan pilih paket", Toast.LENGTH_SHORT).show();
             return;
@@ -486,15 +479,22 @@ public class TambahOdpActivity extends AppCompatActivity {
         String latitude = String.valueOf(lokasiTerpilih.getLatitude());
         String longitude = String.valueOf(lokasiTerpilih.getLongitude());
 
-        Log.d("DATA_INPUT", ", lat: " + latitude + ", lon: " + longitude + ", ODP: " + idOdpDipilih);
+        Log.d("DATA_INPUT", "id jalur: " + idjalur +
+                ", type: " + type +
+                ", port: " + port +
+                ", lat: " + latitude +
+                ", lon: " + longitude +
+                ", terhubung_ke: " + idOdpDipilih);
 
         RequestBody formBody = new FormBody.Builder()
-                .add("api", "tambahpelanggan")
+                .add("post", "Tambahodpbaru") // ⬅️ FIX
                 .add("user", iduserr)
-                .add("rfid", rfidId)
+                .add("idjalur", idjalur)
                 .add("latitude", latitude)
                 .add("longitude", longitude)
                 .add("idodp", idOdpDipilih)
+                .add("type", type)
+                .add("port", port)
                 .build();
 
         Request request = new Request.Builder()
@@ -505,59 +505,49 @@ public class TambahOdpActivity extends AppCompatActivity {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                runOnUiThread(() -> Toast.makeText(TambahOdpActivity.this, "Gagal: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                runOnUiThread(() ->
+                        Toast.makeText(TambahOdpActivity.this,
+                                "Gagal: " + e.getMessage(),
+                                Toast.LENGTH_SHORT).show());
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String hasil = response.body().string();
-                Log.d("respon",  hasil);
+                Log.d("RESPON_API", hasil);
 
                 runOnUiThread(() -> {
                     try {
                         JSONObject json = new JSONObject(hasil);
-                        String status = json.optString("status", "");
-                        String message = json.optString("message", "Tidak ada pesan");
-                        if (status.equalsIgnoreCase("success")) {
-                            // Kosongkan semua field setelah sukses input
-                            editNama.setText("");
-                            editno.setText("");
-                            editHp.setText("");
-                            editTanggal.setText("");
-                            textRfid.setText("");
-                            rfidId = ""; // Jika ada field RFID direset juga
+                        String status = json.optString("status");
+                        String message = json.optString("message");
 
-                            // Reset Spinner ke posisi awal (misalnya posisi 0 = "Pilih Paket" / "Pilih Area")
-                            spinnerServer.setSelection(0);
-                            spinnerPaket.setSelection(0);
-
-                            // Kosongkan koordinat dan marker
-                            lokasiTerpilih = null;
-                            koordinatText.setText("Belum dipilih");
-
-                            // Reset ODP
-                            idOdpDipilih = "";
-                            textOdpDipilih.setText("Belum dipilih");
-                            textOdpidDipilih.setText("");
-
-                            // Fokus kembali ke nama agar siap input baru
-                            editNama.requestFocus();
+                        if ("success".equalsIgnoreCase(status)) {
+                            Toast.makeText(TambahOdpActivity.this,
+                                    "Berhasil: " + message,
+                                    Toast.LENGTH_LONG).show();
                         } else {
-                            Toast.makeText(TambahOdpActivity.this, "Gagal: " + message, Toast.LENGTH_LONG).show();
+                            Toast.makeText(TambahOdpActivity.this,
+                                    "Gagal: " + message,
+                                    Toast.LENGTH_LONG).show();
                         }
                     } catch (JSONException e) {
-                        Toast.makeText(TambahOdpActivity.this, "Respon tidak valid dari server", Toast.LENGTH_LONG).show();
+                        Toast.makeText(TambahOdpActivity.this,
+                                "Respon server tidak valid",
+                                Toast.LENGTH_LONG).show();
                     }
+
                     LottieSuccessActivity.showLottie(findViewById(android.R.id.content));
-
-
                 });
             }
         });
     }
 
-    private void kembaliKeList() {
+
+    private void kembaliKeList(String idjalur,String namajalur) {
         Intent intent = new Intent(this, ListOdpActivity.class);
+        intent.putExtra("id", idjalur);
+        intent.putExtra("nama", namajalur);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
         finish();
