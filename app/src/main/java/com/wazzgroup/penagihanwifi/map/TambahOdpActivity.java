@@ -557,7 +557,7 @@ public class TambahOdpActivity extends AppCompatActivity {
     }
 
     private void kembaliKeList() {
-        Intent intent = new Intent(this, TeknisiActivity.class);
+        Intent intent = new Intent(this, ListOdpActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
         finish();
