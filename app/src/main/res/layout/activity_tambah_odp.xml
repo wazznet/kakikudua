@@ -27,37 +27,15 @@
         app:layout_constraintVertical_bias="0.0">
 
 
-        <EditText
-            android:id="@+id/nama"
-            android:layout_width="300dp"
-            android:layout_height="38dp"
-            android:layout_marginTop="16dp"
-            android:background="@drawable/edittext_border_blue"
-            android:drawableStart="@drawable/baseline_account_circle_24"
-            android:drawablePadding="10dp"
-            android:ems="10"
-            android:hint="nama"
-            android:inputType="text"
-            android:padding="10dp"
-
-            android:shadowRadius="20"
-            android:textColor="#000000"
-            android:textColorHint="#000000"
-            android:textColorLink="#000000"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.529"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
         <LinearLayout
             android:id="@+id/linearLayout"
             android:layout_width="300dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="32dp"
             android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/nama">
+            app:layout_constraintTop_toTopOf="parent">
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -75,7 +53,7 @@
                     android:textStyle="bold" />
 
                 <Spinner
-                    android:id="@+id/paketspinner"
+                    android:id="@+id/typeodp"
                     android:layout_width="130dp"
                     android:layout_height="38dp"
                     android:layout_margin="10dp"
@@ -106,7 +84,7 @@
                     android:textStyle="bold" />
 
                 <Spinner
-                    android:id="@+id/arenaspinner"
+                    android:id="@+id/port"
                     android:layout_width="130dp"
                     android:layout_height="38dp"
                     android:layout_margin="10dp"

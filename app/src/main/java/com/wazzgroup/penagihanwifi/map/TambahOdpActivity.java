@@ -82,6 +82,7 @@ public class TambahOdpActivity extends AppCompatActivity {
     String url = GlobalHelper.BASE_URL;
     private String selectedPaketId = ""; // Untuk menyimpan ID paket yang dipilih
     private String paketTerpilihId = "";
+    Spinner spinnerType, spinnerPort;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,24 +96,64 @@ public class TambahOdpActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_psb);
+        setContentView(R.layout.activity_tambah_odp);
         ImageView kembali = findViewById(R.id.back);
         kembali.setOnClickListener(v -> kembaliKeList());
         iduserr = GlobalHelper.getIdUser(this);
-        editNama = findViewById(R.id.nama);
-        editHp = findViewById(R.id.nomerhp);
-        editno = findViewById(R.id.editno);
-        textRfid = findViewById(R.id.textRfid);
+        spinnerType = findViewById(R.id.typeodp);
+        spinnerPort = findViewById(R.id.port);
+
+// Spinner TYPE
+        ArrayAdapter<String> adapterType = new ArrayAdapter<String>(
+                this,
+                android.R.layout.simple_spinner_item,
+                new String[]{"odp", "odc", "server", "spliter", "rasio"}
+        ) {
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                TextView tv = (TextView) super.getView(position, convertView, parent);
+                tv.setTextColor(Color.BLACK);
+                return tv;
+            }
+
+            @Override
+            public View getDropDownView(int position, View convertView, ViewGroup parent) {
+                TextView tv = (TextView) super.getDropDownView(position, convertView, parent);
+                tv.setTextColor(Color.BLACK);
+                return tv;
+            }
+        };
+        adapterType.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerType.setAdapter(adapterType);
+
+
+        ArrayAdapter<String> adapterPort = new ArrayAdapter<String>(
+                this,
+                android.R.layout.simple_spinner_item,
+                new String[]{"2", "4", "8", "16", "32"}
+        ) {
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                TextView tv = (TextView) super.getView(position, convertView, parent);
+                tv.setTextColor(Color.BLACK);
+                return tv;
+            }
+
+            @Override
+            public View getDropDownView(int position, View convertView, ViewGroup parent) {
+                TextView tv = (TextView) super.getDropDownView(position, convertView, parent);
+                tv.setTextColor(Color.BLACK);
+                return tv;
+            }
+        };
+        adapterPort.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerPort.setAdapter(adapterPort);
+
+
         textOdpDipilih = findViewById(R.id.odp);
         textOdpidDipilih = findViewById(R.id.odpid);
         ConstraintLayout btnKirim = findViewById(R.id.simpan);
-        spinnerServer = findViewById(R.id.arenaspinner);
-        loadSpinnerData(spinnerServer); // Panggil fungsi tanpa perlu tulis URL
-        spinnerPaket = findViewById(R.id.paketspinner);
-        loadSpinnerPaket(spinnerPaket); // Panggil fungsi tanpa perlu tulis URL
-//        spinnerodp = findViewById(R.id.spinnerodp);
-//        loadSpinnerodp(spinnerodp); // Panggil fungsi tanpa perlu tulis URL
-        editTanggal = findViewById(R.id.editTanggal);
+
         koordinatText = findViewById(R.id.koordinat);
         txtKoordinat = findViewById(R.id.koordinat);
         ConstraintLayout btnPilihLokasi = findViewById(R.id.Layoutlokasi);
@@ -130,26 +171,7 @@ public class TambahOdpActivity extends AppCompatActivity {
         }
 
 
-        editTanggal.setOnClickListener(v -> {
-            final Calendar kalender = Calendar.getInstance();
-            int tahun = kalender.get(Calendar.YEAR);
-            int bulan = kalender.get(Calendar.MONTH);
-            int hari = kalender.get(Calendar.DAY_OF_MONTH);
 
-            DatePickerDialog datePicker = new DatePickerDialog(TambahOdpActivity.this,
-                    (view, year, month, dayOfMonth) -> {
-                        // Format: 2025-07-09
-                        String tanggal = year + "-" + (month + 1) + "-" + dayOfMonth;
-                        editTanggal.setText(tanggal);
-                    }, tahun, bulan, hari);
-
-            datePicker.show();
-        });
-
-        nfcAdapter = NfcAdapter.getDefaultAdapter(this);
-        if (nfcAdapter == null) {
-            textRfid.setText("NFC tidak tersedia di perangkat ini.");
-        }
 
         btnKirim.setOnClickListener(v -> kirimData());
     }
@@ -268,180 +290,7 @@ public class TambahOdpActivity extends AppCompatActivity {
         dialog.show();
     }
 
-    private void loadSpinnerData(Spinner spinner) {
-        OkHttpClient client = new OkHttpClient();
 
-        // URL server langsung di dalam fungsi
-        RequestBody formBody = new FormBody.Builder()
-                .add("api", "area")
-                .add("user", iduserr)
-                .build();
-
-
-        Request request = new Request.Builder()
-                .url(url)
-                .post(formBody)
-                .build();
-
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                runOnUiThread(() ->
-                        Toast.makeText(TambahOdpActivity.this, "Gagal koneksi: " + e.getMessage(), Toast.LENGTH_SHORT).show()
-                );
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if (response.isSuccessful()) {
-                    String json = response.body().string();
-                    List<String> listNama = new ArrayList<>();
-                    listId.clear();
-
-                    try {
-                        JSONObject obj = new JSONObject(json);
-                        JSONArray data = obj.getJSONArray("data");
-
-                        for (int i = 0; i < data.length(); i++) {
-                            JSONObject item = data.getJSONObject(i);
-                            listNama.add(item.getString("nama"));
-                            listId.add(item.getString("id"));
-                        }
-
-                        runOnUiThread(() -> {
-                            ArrayAdapter<String> adapter = new ArrayAdapter<String>(TambahOdpActivity.this,
-                                    android.R.layout.simple_spinner_item, listNama) {
-
-                                @Override
-                                public View getView(int position, View convertView, ViewGroup parent) {
-                                    View view = super.getView(position, convertView, parent);
-                                    TextView tv = (TextView) view.findViewById(android.R.id.text1);
-                                    tv.setTextColor(android.graphics.Color.BLACK); // Set warna hitam
-                                    return view;
-                                }
-
-                                @Override
-                                public View getDropDownView(int position, View convertView, ViewGroup parent) {
-                                    View view = super.getDropDownView(position, convertView, parent);
-                                    TextView tv = (TextView) view.findViewById(android.R.id.text1);
-                                    tv.setTextColor(android.graphics.Color.BLACK); // Set warna hitam juga di dropdown
-                                    return view;
-                                }
-                            };
-
-                            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                            spinner.setAdapter(adapter);
-                        });
-
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        runOnUiThread(() ->
-                                Toast.makeText(TambahOdpActivity.this, "Format JSON salah", Toast.LENGTH_SHORT).show()
-                        );
-                    }
-                } else {
-                    runOnUiThread(() ->
-                            Toast.makeText(TambahOdpActivity.this, "Respon server error", Toast.LENGTH_SHORT).show()
-                    );
-                }
-            }
-        });
-    }
-    private void loadSpinnerPaket(Spinner spinner) {
-        OkHttpClient client = new OkHttpClient();
-
-        RequestBody formBody = new FormBody.Builder()
-                .add("api", "paket")
-                .add("user", iduserr)
-                .build();
-
-        Request request = new Request.Builder()
-                .url(url)
-                .post(formBody)
-                .build();
-
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                runOnUiThread(() ->
-                        Toast.makeText(TambahOdpActivity.this, "Gagal koneksi: " + e.getMessage(), Toast.LENGTH_SHORT).show()
-                );
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if (response.isSuccessful()) {
-                    String json = response.body().string();
-                    List<String> listNama = new ArrayList<>();
-                    listId2.clear();
-
-                    try {
-                        JSONObject obj = new JSONObject(json);
-                        JSONArray data = obj.getJSONArray("data");
-
-                        for (int i = 0; i < data.length(); i++) {
-                            JSONObject item = data.getJSONObject(i);
-                            listNama.add(item.getString("paket"));
-                            listId2.add(item.getString("ids"));
-                        }
-
-                        runOnUiThread(() -> {
-                            ArrayAdapter<String> adapter = new ArrayAdapter<String>(TambahOdpActivity.this,
-                                    android.R.layout.simple_spinner_item, listNama) {
-
-                                @Override
-                                public View getView(int position, View convertView, ViewGroup parent) {
-                                    View view = super.getView(position, convertView, parent);
-                                    TextView tv = (TextView) view.findViewById(android.R.id.text1);
-                                    tv.setTextColor(android.graphics.Color.BLACK);
-                                    return view;
-                                }
-
-                                @Override
-                                public View getDropDownView(int position, View convertView, ViewGroup parent) {
-                                    View view = super.getDropDownView(position, convertView, parent);
-                                    TextView tv = (TextView) view.findViewById(android.R.id.text1);
-                                    tv.setTextColor(android.graphics.Color.BLACK);
-                                    return view;
-                                }
-                            };
-
-                            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                            spinner.setAdapter(adapter);
-
-                            // Ambil ID dari pilihan Spinner
-                            spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                                @Override
-                                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                                    String selectedId = listId2.get(position);
-                                    Log.d("SPINNER_ID", "ID yang dipilih: " + selectedId);
-                                    // Simpan ke variabel global kalau perlu
-                                    paketTerpilihId = selectedId;
-                                }
-
-                                @Override
-                                public void onNothingSelected(AdapterView<?> parent) {
-                                    // Kosongkan jika tidak dipilih
-                                    paketTerpilihId = null;
-                                }
-                            });
-                        });
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        runOnUiThread(() ->
-                                Toast.makeText(TambahOdpActivity.this, "Format JSON salah", Toast.LENGTH_SHORT).show()
-                        );
-                    }
-                } else {
-                    runOnUiThread(() ->
-                            Toast.makeText(TambahOdpActivity.this, "Respon server error", Toast.LENGTH_SHORT).show()
-                    );
-                }
-            }
-        });
-    }
 
 
     private void bukaDialogPilihLokasiODP() {
@@ -607,20 +456,13 @@ public class TambahOdpActivity extends AppCompatActivity {
 
 
     private void kirimData() {
-        String nama = editNama.getText().toString().trim();
-        String no = editno.getText().toString().trim();
-        String hp = editHp.getText().toString().trim();
-        int posisiarea = spinnerServer.getSelectedItemPosition();
+        int inttype = spinnerType.getSelectedItemPosition();
 
-        String area = listId.get(posisiarea);
-        int posisiPaket = spinnerPaket.getSelectedItemPosition();
-        String paketId = listId2.get(posisiPaket);
-        String tanggalDipilih = editTanggal.getText().toString().trim();
+        String type = listId.get(inttype);
+        int intport = spinnerPort.getSelectedItemPosition();
+        String port = listId2.get(intport);
 
-        if (nama.isEmpty()) {
-            Toast.makeText(this, "Semua field harus diisi", Toast.LENGTH_SHORT).show();
-            return;
-        }
+
 
         if (lokasiTerpilih == null) {
             Toast.makeText(this, "Silakan pilih lokasi di peta terlebih dahulu", Toast.LENGTH_SHORT).show();
@@ -632,11 +474,11 @@ public class TambahOdpActivity extends AppCompatActivity {
             return;
         }
 
-        if (area.equals("Pilih Area")) {
+        if (type.equals("Pilih Area")) {
             Toast.makeText(this, "Silakan pilih area", Toast.LENGTH_SHORT).show();
             return;
         }
-        if (paketId.equals("Pilih paket")) {
+        if (port.equals("Pilih paket")) {
             Toast.makeText(this, "Silakan pilih paket", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -644,17 +486,11 @@ public class TambahOdpActivity extends AppCompatActivity {
         String latitude = String.valueOf(lokasiTerpilih.getLatitude());
         String longitude = String.valueOf(lokasiTerpilih.getLongitude());
 
-        Log.d("DATA_INPUT", "nama: " + nama + ", hp: " + hp + ", tanggal: " + tanggalDipilih + ", lat: " + latitude + ", lon: " + longitude + ", ODP: " + idOdpDipilih);
+        Log.d("DATA_INPUT", ", lat: " + latitude + ", lon: " + longitude + ", ODP: " + idOdpDipilih);
 
         RequestBody formBody = new FormBody.Builder()
                 .add("api", "tambahpelanggan")
                 .add("user", iduserr)
-                .add("hp", hp)
-                .add("secreet", no)
-                .add("nama", nama)
-                .add("area", area)
-                .add("paket", paketId)
-                .add("tanggaldipilih", tanggalDipilih)
                 .add("rfid", rfidId)
                 .add("latitude", latitude)
                 .add("longitude", longitude)
