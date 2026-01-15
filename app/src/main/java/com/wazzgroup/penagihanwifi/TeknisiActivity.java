@@ -28,6 +28,7 @@ import com.wazzgroup.penagihanwifi.map.MapActivity;
 import com.wazzgroup.penagihanwifi.map.OdpActivity;
 import com.wazzgroup.penagihanwifi.mikrotik.TambahMikrotik;
 import com.wazzgroup.penagihanwifi.pembayaran.ManajemenPenagihan;
+import com.wazzgroup.penagihanwifi.pembayaran.MenuPembayaranActivity;
 import com.wazzgroup.penagihanwifi.pembukuan.PembukuanActivity;
 import com.wazzgroup.penagihanwifi.psb.PsbActivity;
 import com.wazzgroup.penagihanwifi.settings.SettingsActivity;
@@ -174,7 +175,7 @@ public class TeknisiActivity extends AppCompatActivity {
         int id = view.getId();
 
         if (id == R.id.penagihan) {
-            startActivity(new Intent(this, ManajemenPenagihan.class));
+            startActivity(new Intent(this, MenuPembayaranActivity.class));
         } else if (id == R.id.psb) {
             startActivity(new Intent(this, PsbActivity.class));
         }else if (id == R.id.client) {
