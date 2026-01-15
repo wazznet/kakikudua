@@ -14,6 +14,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowInsets;
@@ -64,6 +65,7 @@ public class LapanganActivity extends AppCompatActivity {
     private boolean isLastPage = false;
     private boolean isSearching = false;
     String url = GlobalHelper.BASE_URL;
+    private AlertDialog dialogTambahJalur;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -142,31 +144,49 @@ public class LapanganActivity extends AppCompatActivity {
         });
 
     }
+
+
     private void showDialogTambahJalur() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Tambah Jalur Baru");
 
-        final EditText input = new EditText(this);
-        input.setHint("Masukkan Nama Jalur");
-        input.setPadding(20, 20, 20, 20);
+        AlertDialog.Builder builder =
+                new AlertDialog.Builder(this);
 
-        builder.setView(input);
+        View view = getLayoutInflater()
+                .inflate(R.layout.dialog_tambah_jalur, null);
+        builder.setView(view);
+        builder.setCancelable(false);
 
-        builder.setPositiveButton("Simpan", (dialog, which) -> {
-            String namaJalur = input.getText().toString().trim();
+        dialogTambahJalur = builder.create();
+
+        // 🔥 WAJIB: set animasi di WINDOW
+        if (dialogTambahJalur.getWindow() != null) {
+            dialogTambahJalur.getWindow()
+                    .setWindowAnimations(R.style.DialogTopAnimation);
+            dialogTambahJalur.getWindow()
+                    .setBackgroundDrawableResource(android.R.color.transparent);
+        }
+
+        EditText edtNamaJalur = view.findViewById(R.id.edtNamaJalur);
+        Button btnSimpan = view.findViewById(R.id.btnSimpan);
+        Button btnBatal = view.findViewById(R.id.btnBatal);
+
+        btnBatal.setOnClickListener(v -> dialogTambahJalur.dismiss());
+
+        btnSimpan.setOnClickListener(v -> {
+            String namaJalur = edtNamaJalur.getText().toString().trim();
 
             if (namaJalur.isEmpty()) {
-                Toast.makeText(this, "Nama jalur tidak boleh kosong", Toast.LENGTH_SHORT).show();
+                edtNamaJalur.setError("Nama jalur tidak boleh kosong");
                 return;
             }
 
+            btnSimpan.setEnabled(false);
             kirimJalurBaru(namaJalur);
         });
 
-        builder.setNegativeButton("Batal", (dialog, which) -> dialog.cancel());
-
-        builder.show();
+        dialogTambahJalur.show();
     }
+
     private void kirimJalurBaru(String namaJalur) {
         OkHttpClient client = new OkHttpClient();
         String iduserr = GlobalHelper.getIdUser(this);
