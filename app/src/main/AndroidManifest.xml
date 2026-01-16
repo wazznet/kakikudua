@@ -29,6 +29,7 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
@@ -40,6 +41,9 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" /> <!-- Android 12+ -->
+    <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
 
     <uses-feature
         android:name="android.hardware.microphone"
@@ -70,6 +74,15 @@
         android:theme="@style/Theme.PenagihanWifi"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
+        <activity
+            android:name=".settings.printer.PrinterTestActivity"
+            android:exported="false" />
+        <activity
+            android:name=".settings.printer.PrinterSettingActivity"
+            android:exported="false" />
+        <activity
+            android:name=".settings.printer.PrinterActivity"
+            android:exported="false" />
         <activity
             android:name=".pembayaran.MenuPembayaranActivity"
             android:exported="false" />

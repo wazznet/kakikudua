@@ -29,6 +29,10 @@ public class GlobalHelper {
         SharedPreferences prefs = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         return prefs.getString("wifiid", "");
     }
+    public static String getwifinama(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+        return prefs.getString("nama_wifi", "");
+    }
     public static String getakses(Context context) {
         SharedPreferences prefs = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         return prefs.getString("akses", "");

@@ -28,6 +28,9 @@ import com.wazzgroup.penagihanwifi.map.MapActivity;
 import com.wazzgroup.penagihanwifi.map.OdpActivity;
 import com.wazzgroup.penagihanwifi.pembayaran.ManajemenPenagihan;
 import com.wazzgroup.penagihanwifi.psb.PsbActivity;
+import com.wazzgroup.penagihanwifi.settings.printer.PrinterActivity;
+import com.wazzgroup.penagihanwifi.settings.printer.PrinterSettingActivity;
+import com.wazzgroup.penagihanwifi.settings.printer.PrinterTestActivity;
 import com.wazzgroup.penagihanwifi.tools.PingActivity;
 import com.wazzgroup.penagihanwifi.tools.TracerouteActivity;
 
@@ -153,14 +156,16 @@ public class SettingsActivity extends AppCompatActivity {
 
         if (id == R.id.tombolarea) {
             startActivity(new Intent(this, SettingAreaActivity.class));
-        } else if (id == R.id.tombolpaket) {
-            startActivity(new Intent(this, SettingPaketActivity.class));
         }else if (id == R.id.tombolsub) {
             startActivity(new Intent(this, SettingSubActivity.class));
         }else if (id == R.id.tombollain) {
             startActivity(new Intent(this, SettingLainActivity.class));
         }else if (id == R.id.tomboldev) {
             startActivity(new Intent(this, SettingInfoActivity.class));
+        }else if (id == R.id.paket) {
+            startActivity(new Intent(this, SettingPaketActivity.class));
+        }else if (id == R.id.printer) {
+            startActivity(new Intent(this, PrinterSettingActivity.class));
         }
     }
     private void kembaliKeList() {

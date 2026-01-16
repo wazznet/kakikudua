@@ -1,5 +1,8 @@
 package com.wazzgroup.penagihanwifi.pembayaran;
 
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import androidx.activity.EdgeToEdge;
@@ -16,6 +19,8 @@ import android.widget.*;
 
 import android.view.View;
 
+import com.dantsu.escposprinter.EscPosPrinter;
+import com.dantsu.escposprinter.connection.bluetooth.BluetoothConnection;
 import com.wazzgroup.penagihanwifi.GlobalHelper;
 import com.wazzgroup.penagihanwifi.R;
 import com.wazzgroup.penagihanwifi.client.ClientActivity;
@@ -28,6 +33,9 @@ import java.util.List;
 import okhttp3.*;
 
 import org.json.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 public class PembayaranActivity extends AppCompatActivity {
 
@@ -41,7 +49,10 @@ public class PembayaranActivity extends AppCompatActivity {
     private boolean dariList = false;
     String iduserr;
     String idpenagihan;
+    String namawifi;
+    String nomerhpku;
     String url = GlobalHelper.BASE_URL;
+    String notanama,notaperiode,notaalamat,notapaket,notatotal;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +61,8 @@ public class PembayaranActivity extends AppCompatActivity {
         setContentView(R.layout.activity_pembayaran);
         iduserr = GlobalHelper.getIdUser(this);
         idpenagihan = GlobalHelper.getIdlogin(this);
+        namawifi = GlobalHelper.getwifinama(this);
+        nomerhpku = GlobalHelper.getno(this);
         textNama = findViewById(R.id.nama);
         cekrfid = findViewById(R.id.textView13);
 
@@ -150,6 +163,7 @@ public class PembayaranActivity extends AppCompatActivity {
                         if (obj.getString("status").equals("success")) {
                             rfidId = rfid; // Simpan RFID untuk submit
                             isiDataTagihan(obj);
+
                         } else {
                             Toast.makeText(PembayaranActivity.this, "Tagihan tidak ditemukan", Toast.LENGTH_SHORT).show();
                         }
@@ -236,6 +250,11 @@ public class PembayaranActivity extends AppCompatActivity {
 
             checkboxContainer.addView(checkBox);
         }
+        notanama = textNama.getText().toString();
+        notaperiode = textBulan.getText().toString();
+        notatotal = textJumlahtagihan.getText().toString();
+        notaalamat = textAlamat.getText().toString();
+        notapaket = textpaket.getText().toString();
     }
 
     private void kirimData() {
@@ -283,6 +302,7 @@ public class PembayaranActivity extends AppCompatActivity {
                         JSONObject obj = new JSONObject(hasil);
                         if (obj.getString("status").equals("success")) {
                             Toast.makeText(PembayaranActivity.this, "Pembayaran Berhasil", Toast.LENGTH_SHORT).show();
+                            printTest();
                             if (dariList) {
                                 LottieSuccessActivity.showLottie(findViewById(android.R.id.content));
 
@@ -308,7 +328,60 @@ public class PembayaranActivity extends AppCompatActivity {
             }
         });
     }
+    private void printTest() {
+        try {
+            SharedPreferences sp = getSharedPreferences("printer", MODE_PRIVATE);
+            String mac = sp.getString("mac", null);
 
+            if (mac == null) {
+                Toast.makeText(this, "Printer belum diset", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
+            BluetoothDevice device = adapter.getRemoteDevice(mac);
+
+            BluetoothConnection connection = new BluetoothConnection(device);
+
+            EscPosPrinter printer =
+                    new EscPosPrinter(connection, 203, 48f, 32);
+            String tanggalRealtime = new SimpleDateFormat(
+                    "dd-MM-yyyy HH:mm",
+                    Locale.getDefault()
+            ).format(new Date());
+            printer.printFormattedText(
+                    "[C]<b><font size='big'>"+namawifi+"</font></b>\n" +
+                            "[C]Internet Cepat & Stabil\n" +
+                            "[C]WA : "+nomerhpku+"\n" +
+                            "[C]--------------------------------\n" +
+
+                            "[L]Nama      : "+notanama+"\n" +
+                            "[L]Alamat    : "+notaalamat+"\n" +
+                            "[L]paket     : "+notapaket+"\n" +
+                            "[C]--------------------------------\n" +
+
+                            "[L]Periode   : "+notaperiode+"\n" +
+                            "[L]Tagihan   : "+notatotal+"\n" +
+                            "[C]--------------------------------\n" +
+
+                            "[L]<b>TOTAL</b>[R]<b>Rp "+notatotal+"</b>\n" +
+                            "[L]STATUS    : <b>LUNAS</b>\n" +
+                            "[C]--------------------------------\n" +
+
+                            "[L]Tanggal   : " + tanggalRealtime +"\n" +
+                            "[L]Kasir     : Wahyu\n" +
+                            "[C]--------------------------------\n" +
+
+                            "[C]Terima kasih atas pembayaran\n" +
+                            "[C]Simpan nota ini sebagai\n" +
+                            "[C]bukti resmi\n\n\n"
+            );
+
+        } catch (Exception e) {
+            Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            e.printStackTrace();
+        }
+    }
     private void kosongkanForm() {
         textNama.setText("");
         textNo.setText("");

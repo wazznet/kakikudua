@@ -48,17 +48,17 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="130dp"
+            android:layout_height="75dp"
             android:background="@drawable/circular_overlay2">
 
             <TextView
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="40dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="2dp"
                 android:text="Total Tagihan terbayar Bulan Ini"
                 android:textColor="#000000"
-                android:textSize="16sp"
+                android:textSize="14sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toEndOf="@+id/imageView9"
                 app:layout_constraintTop_toBottomOf="@+id/pemasukan" />
@@ -68,7 +68,6 @@
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="40dp"
-                android:layout_marginTop="8dp"
                 android:text="Rp.0"
                 android:textColor="#1048F2"
                 app:layout_constraintStart_toEndOf="@+id/imageView9"
@@ -76,8 +75,8 @@
 
             <ImageView
                 android:id="@+id/imageView9"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:layout_marginStart="8dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -88,7 +87,7 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="130dp"
+            android:layout_height="75dp"
             android:layout_marginTop="20dp"
             android:background="@drawable/circular_overlay2">
 
@@ -96,20 +95,18 @@
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="40dp"
-                android:layout_marginTop="8dp"
                 android:text="Total Tagihan belum terbayar Bulan Ini"
                 android:textColor="#000000"
-                android:textSize="16sp"
+                android:textSize="14sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toEndOf="@+id/imageView7"
-                app:layout_constraintTop_toBottomOf="@+id/pengeluaran" />
+                app:layout_constraintTop_toBottomOf="@+id/telatpemasukan" />
 
             <TextView
-                android:id="@+id/pengeluaran"
+                android:id="@+id/telatpemasukan"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="40dp"
-                android:layout_marginTop="8dp"
                 android:text="Rp.0"
                 android:textColor="#FF0404"
                 app:layout_constraintStart_toEndOf="@+id/imageView7"
@@ -117,8 +114,8 @@
 
             <ImageView
                 android:id="@+id/imageView7"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
@@ -155,33 +152,34 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/textView69"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/textView69">
+                app:layout_constraintEnd_toEndOf="parent">
 
                 <!-- MENU 1 -->
                 <FrameLayout
                     android:id="@+id/menu1"
-                    android:layout_width="75dp"
+                    android:layout_width="0dp"
                     android:layout_height="85dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
                     app:layout_constraintEnd_toStartOf="@id/menu2"
                     app:layout_constraintHorizontal_chainStyle="spread"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
 
                     <LinearLayout
-                        android:id="@+id/ping"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:background="@drawable/curved_border"
-                        android:clickable="true"
                         android:gravity="center"
                         android:orientation="vertical">
 
                         <TextView
+                            android:id="@+id/tagihan"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="100"
+                            android:text="0"
                             android:textAlignment="center"
                             android:textColor="#FFFFFF"
                             android:textStyle="bold" />
@@ -199,25 +197,25 @@
                 <!-- MENU 2 -->
                 <FrameLayout
                     android:id="@+id/menu2"
-                    android:layout_width="75dp"
+                    android:layout_width="0dp"
                     android:layout_height="85dp"
+                    android:layout_marginEnd="8dp"
                     app:layout_constraintEnd_toStartOf="@id/menu3"
                     app:layout_constraintStart_toEndOf="@id/menu1"
                     app:layout_constraintTop_toTopOf="parent">
 
                     <LinearLayout
-                        android:id="@+id/traceroute"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:background="@drawable/lunas_border"
-                        android:clickable="true"
                         android:gravity="center"
                         android:orientation="vertical">
 
                         <TextView
+                            android:id="@+id/lunas"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="100"
+                            android:text="0"
                             android:textAlignment="center"
                             android:textColor="#FFFFFF"
                             android:textStyle="bold" />
@@ -235,25 +233,25 @@
                 <!-- MENU 3 -->
                 <FrameLayout
                     android:id="@+id/menu3"
-                    android:layout_width="75dp"
+                    android:layout_width="0dp"
                     android:layout_height="85dp"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginEnd="8dp"
+                    app:layout_constraintEnd_toStartOf="@id/menu4"
                     app:layout_constraintStart_toEndOf="@id/menu2"
                     app:layout_constraintTop_toTopOf="parent">
 
                     <LinearLayout
-                        android:id="@+id/ACS"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:background="@drawable/telat_border"
-                        android:clickable="true"
                         android:gravity="center"
                         android:orientation="vertical">
 
                         <TextView
+                            android:id="@+id/telat"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="100"
+                            android:text="0"
                             android:textAlignment="center"
                             android:textColor="#FFFFFF"
                             android:textStyle="bold" />
@@ -262,6 +260,42 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Terlambat"
+                            android:textColor="@color/white"
+                            android:textSize="11sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+                </FrameLayout>
+
+                <!-- MENU 4 -->
+                <FrameLayout
+                    android:id="@+id/menu4"
+                    android:layout_width="0dp"
+                    android:layout_height="85dp"
+                    android:layout_marginEnd="8dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/menu3"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/telat_border"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/nunggak"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="0"
+                            android:textAlignment="center"
+                            android:textColor="#FFFFFF"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Nunggak"
                             android:textColor="@color/white"
                             android:textSize="11sp"
                             android:textStyle="bold" />
