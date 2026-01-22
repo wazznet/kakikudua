@@ -1,4 +1,4 @@
-package com.wazzgroup.penagihanwifi.pembayaran;
+package com.wazzgroup.penagihanwifi.pembayaran.lunas;
 
 
 
@@ -10,14 +10,15 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.wazzgroup.penagihanwifi.R;
+import com.wazzgroup.penagihanwifi.pembayaran.tagihan.TagihanBelumLunas;
 
 import java.util.ArrayList;
 
-public class TagihanAdapter extends ArrayAdapter<TagihanBelumLunas> {
+public class LunasAdapter extends ArrayAdapter<TagihanBelumLunas> {
 
     private ArrayList<TagihanBelumLunas> dataAsli;
 
-    public TagihanAdapter(Context context, ArrayList<TagihanBelumLunas> data) {
+    public LunasAdapter(Context context, ArrayList<TagihanBelumLunas> data) {
         super(context, 0, data);
         this.dataAsli = new ArrayList<>(data);
     }

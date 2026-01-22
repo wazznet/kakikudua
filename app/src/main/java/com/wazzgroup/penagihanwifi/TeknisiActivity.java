@@ -14,25 +14,19 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.wazzgroup.penagihanwifi.acs.AcskuActivity;
 import com.wazzgroup.penagihanwifi.bot.BotPenagihanActivity;
 import com.wazzgroup.penagihanwifi.client.ClientActivity;
-import com.wazzgroup.penagihanwifi.dev.DevActivity;
-import com.wazzgroup.penagihanwifi.halamanpelanggan.PelangganActivity;
 import com.wazzgroup.penagihanwifi.komplen.KomplainActivity;
 import com.wazzgroup.penagihanwifi.map.LapanganActivity;
 import com.wazzgroup.penagihanwifi.map.MapActivity;
-import com.wazzgroup.penagihanwifi.map.OdpActivity;
 import com.wazzgroup.penagihanwifi.mikrotik.TambahMikrotik;
-import com.wazzgroup.penagihanwifi.pembayaran.ManajemenPenagihan;
 import com.wazzgroup.penagihanwifi.pembayaran.MenuPembayaranActivity;
 import com.wazzgroup.penagihanwifi.pembukuan.PembukuanActivity;
 import com.wazzgroup.penagihanwifi.psb.PsbActivity;
 import com.wazzgroup.penagihanwifi.settings.SettingsActivity;
-import com.wazzgroup.penagihanwifi.tools.AcsActivity;
 import com.wazzgroup.penagihanwifi.tools.PingActivity;
 import com.wazzgroup.penagihanwifi.tools.TracerouteActivity;
 

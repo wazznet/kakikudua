@@ -1,6 +1,4 @@
-package com.wazzgroup.penagihanwifi.pembayaran;
-
-
+package com.wazzgroup.penagihanwifi.pembayaran.nunggak;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -18,10 +16,18 @@ import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 
 import com.wazzgroup.penagihanwifi.GlobalHelper;
 import com.wazzgroup.penagihanwifi.R;
 import com.wazzgroup.penagihanwifi.TeknisiActivity;
+import com.wazzgroup.penagihanwifi.pembayaran.MenuPembayaranActivity;
+import com.wazzgroup.penagihanwifi.pembayaran.PembayaranActivity;
+import com.wazzgroup.penagihanwifi.pembayaran.tagihan.ManajemenPenagihan;
+import com.wazzgroup.penagihanwifi.pembayaran.tagihan.TagihanAdapter;
+import com.wazzgroup.penagihanwifi.pembayaran.tagihan.TagihanBelumLunas;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -30,9 +36,15 @@ import org.osmdroid.config.Configuration;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import okhttp3.*;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
-public class ManajemenPenagihan extends AppCompatActivity {
+public class TagihanNunggakActivity extends AppCompatActivity {
     String url = GlobalHelper.BASE_URL;
 
     private ListView listView;
@@ -51,13 +63,10 @@ public class ManajemenPenagihan extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_manajemen_penagihan);
+        setContentView(R.layout.activity_tagihan_nunggak);
 
 
 
-        ConstraintLayout btnPilihLokasiOdp = findViewById(R.id.tombolrfid);
-
-        btnPilihLokasiOdp.setOnClickListener(v ->  startActivity(new Intent(this, PembayaranActivity.class)));
 
         listView = findViewById(R.id.listTagihan);
         searchBox = findViewById(R.id.searchBox);
@@ -76,8 +85,10 @@ public class ManajemenPenagihan extends AppCompatActivity {
         listView.setOnItemClickListener((parent, view, position, id) -> {
             TagihanBelumLunas data = listData.get(position);
 
-            Intent intent = new Intent(ManajemenPenagihan.this, PembayaranActivity.class);
+            Intent intent = new Intent(TagihanNunggakActivity.this, PembayaranActivity.class);
             intent.putExtra("id_pelanggan", data.idPelanggan);
+            intent.putExtra("darihalaman", "nunggak");
+
             startActivity(intent);
         });
 
@@ -134,7 +145,7 @@ public class ManajemenPenagihan extends AppCompatActivity {
                 } catch (Exception ex) {
                     Toast.makeText(this, "Tidak bisa membuka lokasi di Maps atau Browser", Toast.LENGTH_SHORT).show();
 
-                     }
+                }
             }
         });
         btnChat.setOnClickListener(v -> {
@@ -173,7 +184,7 @@ public class ManajemenPenagihan extends AppCompatActivity {
         String iduserr = GlobalHelper.getIdUser(this);
 
         RequestBody formBody = new FormBody.Builder()
-                .add("api", "search_belum_bayar")
+                .add("api", "search_nunggak_bayar")
                 .add("user", iduserr)
                 .add("keyword", keyword)
                 .build();
@@ -185,7 +196,7 @@ public class ManajemenPenagihan extends AppCompatActivity {
 
         client.newCall(request).enqueue(new Callback() {
             @Override public void onFailure(Call call, IOException e) {
-                runOnUiThread(() -> Toast.makeText(ManajemenPenagihan.this, "Gagal cari data", Toast.LENGTH_SHORT).show());
+                runOnUiThread(() -> Toast.makeText(TagihanNunggakActivity.this, "Gagal cari data", Toast.LENGTH_SHORT).show());
             }
 
             @Override public void onResponse(Call call, Response response) throws IOException {
@@ -217,7 +228,7 @@ public class ManajemenPenagihan extends AppCompatActivity {
                         adapter.notifyDataSetChanged();
 
                     } catch (Exception e) {
-                        Toast.makeText(ManajemenPenagihan.this, "Format data salah", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(TagihanNunggakActivity.this, "Format data salah", Toast.LENGTH_SHORT).show();
                     }
                 });
             }
@@ -229,7 +240,7 @@ public class ManajemenPenagihan extends AppCompatActivity {
         String iduserr = GlobalHelper.getIdUser(this);
 
         RequestBody formBody = new FormBody.Builder()
-                .add("api", "belum_bayar")
+                .add("api", "search_nunggak_bayar")
                 .add("user", iduserr)
                 .build();
 
@@ -240,7 +251,7 @@ public class ManajemenPenagihan extends AppCompatActivity {
 
         client.newCall(request).enqueue(new Callback() {
             @Override public void onFailure(Call call, IOException e) {
-                runOnUiThread(() -> Toast.makeText(ManajemenPenagihan.this, "Gagal ambil data", Toast.LENGTH_SHORT).show());
+                runOnUiThread(() -> Toast.makeText(TagihanNunggakActivity.this, "Gagal ambil data", Toast.LENGTH_SHORT).show());
             }
 
             @Override public void onResponse(Call call, Response response) throws IOException {
@@ -272,13 +283,13 @@ public class ManajemenPenagihan extends AppCompatActivity {
                         adapter.notifyDataSetChanged();
 
                     } catch (Exception e) {
-                        Toast.makeText(ManajemenPenagihan.this, "Format data salah", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(TagihanNunggakActivity.this, "Format data salah", Toast.LENGTH_SHORT).show();
                     }
                 });
             }
         });
     }private void kembaliKeList() {
-        Intent intent = new Intent(this, TeknisiActivity.class);
+        Intent intent = new Intent(this, MenuPembayaranActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
         finish();

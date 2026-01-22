@@ -14,7 +14,6 @@ import android.content.Intent;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.text.TextUtils;
-import android.util.Log;
 import android.widget.*;
 
 import android.view.View;
@@ -23,8 +22,11 @@ import com.dantsu.escposprinter.EscPosPrinter;
 import com.dantsu.escposprinter.connection.bluetooth.BluetoothConnection;
 import com.wazzgroup.penagihanwifi.GlobalHelper;
 import com.wazzgroup.penagihanwifi.R;
-import com.wazzgroup.penagihanwifi.client.ClientActivity;
 import com.wazzgroup.penagihanwifi.lottie.LottieSuccessActivity;
+import com.wazzgroup.penagihanwifi.pembayaran.lunas.TagihanLunasActivity;
+import com.wazzgroup.penagihanwifi.pembayaran.nunggak.TagihanNunggakActivity;
+import com.wazzgroup.penagihanwifi.pembayaran.tagihan.ManajemenPenagihan;
+import com.wazzgroup.penagihanwifi.pembayaran.telat.TagihanTelatActivity;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -51,6 +53,7 @@ public class PembayaranActivity extends AppCompatActivity {
     String idpenagihan;
     String namawifi;
     String nomerhpku;
+    String namaku;
     String url = GlobalHelper.BASE_URL;
     String notanama,notaperiode,notaalamat,notapaket,notatotal;
 
@@ -63,6 +66,7 @@ public class PembayaranActivity extends AppCompatActivity {
         idpenagihan = GlobalHelper.getIdlogin(this);
         namawifi = GlobalHelper.getwifinama(this);
         nomerhpku = GlobalHelper.getno(this);
+        namaku = GlobalHelper.getnamaku(this);
         textNama = findViewById(R.id.nama);
         cekrfid = findViewById(R.id.textView13);
 
@@ -307,10 +311,7 @@ public class PembayaranActivity extends AppCompatActivity {
                                 LottieSuccessActivity.showLottie(findViewById(android.R.id.content));
 
                                 // Jika dari list, balik ke ManajemenPenagihan
-                                Intent intent = new Intent(PembayaranActivity.this, ManajemenPenagihan.class);
-                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                startActivity(intent);
-                                finish();
+                                kembaliKeList();
 
                             } else {
                                 LottieSuccessActivity.showLottie(findViewById(android.R.id.content));
@@ -360,16 +361,15 @@ public class PembayaranActivity extends AppCompatActivity {
                             "[L]paket     : "+notapaket+"\n" +
                             "[C]--------------------------------\n" +
 
-                            "[L]Periode   : "+notaperiode+"\n" +
-                            "[L]Tagihan   : "+notatotal+"\n" +
+                            "[L]"+notaperiode+"\n" +
                             "[C]--------------------------------\n" +
 
-                            "[L]<b>TOTAL</b>[R]<b>Rp "+notatotal+"</b>\n" +
+                            "[L]<b>"+notatotal+"</b>\n" +
                             "[L]STATUS    : <b>LUNAS</b>\n" +
                             "[C]--------------------------------\n" +
 
                             "[L]Tanggal   : " + tanggalRealtime +"\n" +
-                            "[L]Kasir     : Wahyu\n" +
+                            "[L]Kasir     : "+namaku+"\n" +
                             "[C]--------------------------------\n" +
 
                             "[C]Terima kasih atas pembayaran\n" +
@@ -394,11 +394,32 @@ public class PembayaranActivity extends AppCompatActivity {
         progressBar.setVisibility(show ? View.VISIBLE : View.GONE);
         btnKirim.setClickable(!show);         // Ganti setEnabled dengan setClickable
         btnKirim.setAlpha(show ? 0.5f : 1.0f); // Beri efek transparan saat loading
-    }private void kembaliKeList() {
-        Intent intent = new Intent(this, ManajemenPenagihan.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
-        finish();
     }
+    private void kembaliKeList() {
+        String darihalaman = getIntent().getStringExtra("darihalaman");
+
+        if ("telat".equals(darihalaman)) {
+
+            Intent intent = new Intent(this, TagihanTelatActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            finish();
+
+        } else if ("nunggak".equals(darihalaman)) {
+
+            Intent intent = new Intent(this, TagihanNunggakActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            finish();
+
+        }   else {
+
+            Intent intent = new Intent(this, ManajemenPenagihan.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            finish();
+        }
+    }
+
 
 }

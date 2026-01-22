@@ -20,6 +20,11 @@ public class GlobalHelper {
         return prefs.getString("nohp", "");
 
     }
+    public static String getnamaku(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+        return prefs.getString("nama", "");
+
+    }
     public static String getIdPelanggan(Context context) {
         SharedPreferences prefs = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         return prefs.getString("idpelannggan", "");

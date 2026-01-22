@@ -2,7 +2,7 @@ package com.wazzgroup.penagihanwifi.pembayaran;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -15,6 +15,10 @@ import androidx.core.view.WindowInsetsCompat;
 import com.wazzgroup.penagihanwifi.GlobalHelper;
 import com.wazzgroup.penagihanwifi.R;
 import com.wazzgroup.penagihanwifi.TeknisiActivity;
+import com.wazzgroup.penagihanwifi.pembayaran.lunas.TagihanLunasActivity;
+import com.wazzgroup.penagihanwifi.pembayaran.nunggak.TagihanNunggakActivity;
+import com.wazzgroup.penagihanwifi.pembayaran.tagihan.ManajemenPenagihan;
+import com.wazzgroup.penagihanwifi.pembayaran.telat.TagihanTelatActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -50,22 +54,25 @@ public class MenuPembayaranActivity extends AppCompatActivity {
         lunas = findViewById(R.id.lunas);
         telatt = findViewById(R.id.telat);
         nunggakk = findViewById(R.id.nunggak);
+        ImageView kembali = findViewById(R.id.backtolist);
+        kembali.setOnClickListener(v -> kembaliKeList());
+
         ceksaldo();
         findViewById(R.id.menu1).setOnClickListener(v ->
                 startActivity(new Intent(this, ManajemenPenagihan.class))
         );
 
-//        findViewById(R.id.menu2).setOnClickListener(v ->
-//                startActivity(new Intent(this, LunasActivity.class))
-//        );
+        findViewById(R.id.menu2).setOnClickListener(v ->
+                startActivity(new Intent(this, TagihanLunasActivity.class))
+        );
 //
-//        findViewById(R.id.menu3).setOnClickListener(v ->
-//                startActivity(new Intent(this, TerlambatActivity.class))
-//        );
-//
-//        findViewById(R.id.menu4).setOnClickListener(v ->
-//                startActivity(new Intent(this, NunggakActivity.class))
-//        );
+        findViewById(R.id.menu3).setOnClickListener(v ->
+                startActivity(new Intent(this, TagihanTelatActivity.class))
+        );
+
+        findViewById(R.id.menu4).setOnClickListener(v ->
+                startActivity(new Intent(this, TagihanNunggakActivity.class))
+        );
     }
 
     private void ceksaldo() {
@@ -141,5 +148,11 @@ public class MenuPembayaranActivity extends AppCompatActivity {
                 });
             }
         });
+    }
+    private void kembaliKeList() {
+        Intent intent = new Intent(this, TeknisiActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        finish();
     }
 }

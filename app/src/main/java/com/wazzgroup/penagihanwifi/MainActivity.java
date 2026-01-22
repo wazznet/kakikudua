@@ -15,7 +15,7 @@ import com.wazzgroup.penagihanwifi.client.ClientActivity;
 import com.wazzgroup.penagihanwifi.komplen.KomplainActivity;
 import com.wazzgroup.penagihanwifi.map.MapActivity;
 import com.wazzgroup.penagihanwifi.map.OdpActivity;
-import com.wazzgroup.penagihanwifi.pembayaran.ManajemenPenagihan;
+import com.wazzgroup.penagihanwifi.pembayaran.tagihan.ManajemenPenagihan;
 import com.wazzgroup.penagihanwifi.psb.PsbActivity;
 import com.wazzgroup.penagihanwifi.settings.SettingsActivity;
 import com.wazzgroup.penagihanwifi.tools.PingActivity;

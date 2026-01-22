@@ -75,6 +75,15 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".pembayaran.nunggak.TagihanNunggakActivity"
+            android:exported="false" />
+        <activity
+            android:name=".pembayaran.telat.TagihanTelatActivity"
+            android:exported="false" />
+        <activity
+            android:name=".pembayaran.lunas.TagihanLunasActivity"
+            android:exported="false" />
+        <activity
             android:name=".settings.printer.PrinterTestActivity"
             android:exported="false" />
         <activity
@@ -232,7 +241,7 @@
             android:name=".LogoutActivity"
             android:exported="false" />
         <activity
-            android:name=".pembayaran.ManajemenPenagihan"
+            android:name=".pembayaran.tagihan.ManajemenPenagihan"
             android:exported="false" />
         <activity
             android:name=".client.EditPelangganActivity"

@@ -7,43 +7,24 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.wazzgroup.penagihanwifi.GlobalHelper;
 import com.wazzgroup.penagihanwifi.LoginActivity;
-import com.wazzgroup.penagihanwifi.LogoutActivity;
 import com.wazzgroup.penagihanwifi.R;
 import com.wazzgroup.penagihanwifi.TeknisiActivity;
-import com.wazzgroup.penagihanwifi.client.ClientActivity;
-import com.wazzgroup.penagihanwifi.komplen.KomplainActivity;
-import com.wazzgroup.penagihanwifi.map.MapActivity;
-import com.wazzgroup.penagihanwifi.map.OdpActivity;
-import com.wazzgroup.penagihanwifi.pembayaran.ManajemenPenagihan;
-import com.wazzgroup.penagihanwifi.psb.PsbActivity;
-import com.wazzgroup.penagihanwifi.settings.printer.PrinterActivity;
 import com.wazzgroup.penagihanwifi.settings.printer.PrinterSettingActivity;
-import com.wazzgroup.penagihanwifi.settings.printer.PrinterTestActivity;
-import com.wazzgroup.penagihanwifi.tools.PingActivity;
-import com.wazzgroup.penagihanwifi.tools.TracerouteActivity;
 
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.text.NumberFormat;
-import java.util.Locale;
 
 import okhttp3.Call;
 import okhttp3.Callback;

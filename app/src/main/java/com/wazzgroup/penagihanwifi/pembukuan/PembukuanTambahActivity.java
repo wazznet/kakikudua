@@ -1,7 +1,5 @@
 package com.wazzgroup.penagihanwifi.pembukuan;
 
-import static io.netty.handler.codec.AsciiString.getBytes;
-
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -37,20 +35,15 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.GlideException;
 import com.wazzgroup.penagihanwifi.GlobalHelper;
 import com.wazzgroup.penagihanwifi.R;
-import com.wazzgroup.penagihanwifi.halamanpelanggan.komplen.komplenpelangganku;
-import com.wazzgroup.penagihanwifi.pembayaran.ManajemenPenagihan;
-import com.wazzgroup.penagihanwifi.pembayaran.TagihanAdapter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Objects;
 
 import okhttp3.Call;
 import okhttp3.Callback;

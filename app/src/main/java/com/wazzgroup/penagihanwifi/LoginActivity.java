@@ -109,6 +109,7 @@ public class LoginActivity extends AppCompatActivity {
                             String sub_akun = obj.getString("sub_akun");
                             String level = obj.getString("level");
                             String nohp = obj.getString("nohp");
+                            String nama = obj.getString("nama");
                             String akses = obj.getString("akses").trim(); // Tambahkan trim disini
                             Log.d("DEBUG_AKSES", "Akses dari server: [" + akses + "]");
 
@@ -117,6 +118,7 @@ public class LoginActivity extends AppCompatActivity {
                             editor.putBoolean("isLoggedIn", true);
                             editor.putString("nama_wifi", nama_wifi);
                             editor.putString("idlogin", id);
+                            editor.putString("nama", nama);
                             editor.putString("nohp", nohp);
                             try {
                                 int subAkunInt = Integer.parseInt(sub_akun);

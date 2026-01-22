@@ -1,4 +1,4 @@
-package com.wazzgroup.penagihanwifi.pembayaran;
+package com.wazzgroup.penagihanwifi.pembayaran.tagihan;
 
 
 public class TagihanBelumLunas {

@@ -783,10 +783,10 @@ public class PsbActivity extends AppCompatActivity {
             return;
         }
 
-        if (idOdpDipilih.isEmpty()) {
-            Toast.makeText(this, "Silakan pilih ODP terlebih dahulu", Toast.LENGTH_SHORT).show();
-            return;
-        }
+//        if (idOdpDipilih.isEmpty()) {
+//            Toast.makeText(this, "Silakan pilih ODP terlebih dahulu", Toast.LENGTH_SHORT).show();
+//            return;
+//        }
 
         if (area.equals("Pilih Area")) {
             Toast.makeText(this, "Silakan pilih area", Toast.LENGTH_SHORT).show();
