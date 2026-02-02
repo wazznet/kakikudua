@@ -1,121 +1,99 @@
 package com.wazzgroup.penagihanwifi.map;
 
+
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.location.LocationManager;
 import android.nfc.NfcAdapter;
-import android.nfc.Tag;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.widget.*;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-
-import android.view.View;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-
-import okhttp3.*;
-
-import org.json.*;
-import org.osmdroid.config.Configuration;
-import org.osmdroid.util.GeoPoint;
-import org.osmdroid.views.MapView;
-
-import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
-import org.osmdroid.views.overlay.Marker;
-import org.osmdroid.views.overlay.Polygon;
-
-import android.Manifest;
-import android.content.pm.PackageManager;
-import android.widget.Toast;
-
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.gson.Gson;
 import com.wazzgroup.penagihanwifi.GlobalHelper;
 import com.wazzgroup.penagihanwifi.R;
-import com.wazzgroup.penagihanwifi.TeknisiActivity;
 import com.wazzgroup.penagihanwifi.lottie.LottieSuccessActivity;
-import com.wazzgroup.penagihanwifi.pembukuan.PembukuanTambahActivity;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
+import org.osmdroid.util.GeoPoint;
+import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.Marker;
+import org.osmdroid.views.overlay.Polygon;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
-import com.wazzgroup.penagihanwifi.R;
-import com.wazzgroup.penagihanwifi.psb.PsbActivity;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
-public class TambahOdpActivity extends AppCompatActivity {
-    private Spinner spinnerServer,spinnerPaket,spinnerodp;
-    private EditText editNama, editHp, editno,editTanggal;
-    private TextView textRfid,koordinatText;
-    private Button btnKirim;
-    private ConstraintLayout  btnPilihLokasi,btnPilihLokasiOdp;
-    private NfcAdapter nfcAdapter;
-    private String rfidId = "";
-    private List<String> listId = new ArrayList<>();
-    private List<String> listId2 = new ArrayList<>();
+public class EditOdpActivity extends AppCompatActivity {
+    private lapangan datalama;
     private final OkHttpClient client = new OkHttpClient();
-    private TextView txtKoordinat,textOdpDipilih,textOdpidDipilih;
+    private TextView txtKoordinat,textOdpDipilih,textOdpidDipilih,namaodp;
     private FusedLocationProviderClient fusedLocationClient;
     private GeoPoint lokasiTerpilih = null;
     private String idOdpDipilih = "";
-    private String namaOdpDipilih = "";
 
+    private String namaOdpDipilih = "";
     private JSONArray dataODP;
-    private LocationManager locationManager;
     String iduserr;
     String url = GlobalHelper.BASE_URL;
-    private String selectedPaketId = ""; // Untuk menyimpan ID paket yang dipilih
-    private String paketTerpilihId = "";
     Spinner spinnerType, spinnerPort;
     EditText notetxt;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Configuration.getInstance().setUserAgentValue(getPackageName());
-        getWindow().getDecorView().setSystemUiVisibility(
-                View.SYSTEM_UI_FLAG_FULLSCREEN |
-                        View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY |
-                        View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-        );
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_tambah_odp);
+        setContentView(R.layout.activity_edit_odp);
+        String json = getIntent().getStringExtra("data_odp");
+        datalama = new Gson().fromJson(json, lapangan.class);
         iduserr = GlobalHelper.getIdUser(this);
         spinnerType = findViewById(R.id.typeodp);
         spinnerPort = findViewById(R.id.port);
-        String idjalur = getIntent().getStringExtra("idjalur");
-        String namajalur = getIntent().getStringExtra("nama");
 
-        TextView namaText = findViewById(R.id.jalur);
+         namaodp = findViewById(R.id.namaodp);
 
-        if (namajalur != null) {
-            namaText.setText(namajalur);
-        } else {
-            namaText.setText("-");
-            Log.e("INTENT", "nama jalur null");
-        }
-// Spinner TYPE
+
+        String[] dataType = {"odp", "odc", "closure"};
+
         ArrayAdapter<String> adapterType = new ArrayAdapter<String>(
                 this,
                 android.R.layout.simple_spinner_item,
-                new String[]{"odp", "odc", "closure"}
+                dataType
         ) {
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
@@ -131,14 +109,26 @@ public class TambahOdpActivity extends AppCompatActivity {
                 return tv;
             }
         };
+
         adapterType.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerType.setAdapter(adapterType);
 
+// AUTO SELECT TYPE
+        if (datalama != null && datalama.type != null) {
+            for (int i = 0; i < dataType.length; i++) {
+                if (dataType[i].equalsIgnoreCase(datalama.type)) {
+                    spinnerType.setSelection(i);
+                    break;
+                }
+            }
+        }
+
+        String[] dataPort = {"0", "2", "4", "8", "16", "32"};
 
         ArrayAdapter<String> adapterPort = new ArrayAdapter<String>(
                 this,
                 android.R.layout.simple_spinner_item,
-                new String[]{"0","2", "4", "8", "16", "32"}
+                dataPort
         ) {
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
@@ -154,15 +144,25 @@ public class TambahOdpActivity extends AppCompatActivity {
                 return tv;
             }
         };
+
         adapterPort.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerPort.setAdapter(adapterPort);
+
+// AUTO SELECT PORT
+        if (datalama != null && datalama.port != null) {
+            for (int i = 0; i < dataPort.length; i++) {
+                if (dataPort[i].equals(datalama.port)) {
+                    spinnerPort.setSelection(i);
+                    break;
+                }
+            }
+        }
 
 
         textOdpDipilih = findViewById(R.id.odp);
         textOdpidDipilih = findViewById(R.id.odpid);
         ConstraintLayout btnKirim = findViewById(R.id.simpan);
 
-        koordinatText = findViewById(R.id.koordinat);
         txtKoordinat = findViewById(R.id.koordinat);
         notetxt = findViewById(R.id.editTextText);
 
@@ -176,7 +176,7 @@ public class TambahOdpActivity extends AppCompatActivity {
 
 
         ImageView kembali = findViewById(R.id.back);
-        kembali.setOnClickListener(v -> kembaliKeList(idjalur,namajalur));
+        kembali.setOnClickListener(v -> kembaliKeList(datalama.id_jalur,datalama.nama_jalur));
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 100);
@@ -186,27 +186,23 @@ public class TambahOdpActivity extends AppCompatActivity {
 
 
 
-        btnKirim.setOnClickListener(v -> kirimData(idjalur));
+        btnKirim.setOnClickListener(v -> kirimData(datalama.id_jalur));
+        isiDataLama();
+    }
+    private void isiDataLama() {
+        namaodp.setText(datalama.nama);
+        if(Objects.equals(datalama.note, "null")){
+            notetxt.setText("");
+        }else{
+            notetxt.setText(datalama.note);
+        }
+        //notetxt.setText(datalama.note);
+        txtKoordinat.setText("Lat: " + datalama.latitude + ", Lon: " + datalama.longitude);
+        textOdpDipilih.setText(datalama.nama_terhubung);
+
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (nfcAdapter != null) {
-            PendingIntent pendingIntent = PendingIntent.getActivity(
-                    this, 0, new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP),
-                    PendingIntent.FLAG_MUTABLE);
-            nfcAdapter.enableForegroundDispatch(this, pendingIntent, null, null);
-        }
-    }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        if (nfcAdapter != null) {
-            nfcAdapter.disableForegroundDispatch(this);
-        }
-    }
 
 
     @SuppressLint("ClickableViewAccessibility")
@@ -330,7 +326,7 @@ public class TambahOdpActivity extends AppCompatActivity {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                runOnUiThread(() -> Toast.makeText(TambahOdpActivity.this, "Gagal ambil data ODP: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                runOnUiThread(() -> Toast.makeText(EditOdpActivity.this, "Gagal ambil data ODP: " + e.getMessage(), Toast.LENGTH_SHORT).show());
             }
 
             @Override
@@ -342,7 +338,7 @@ public class TambahOdpActivity extends AppCompatActivity {
                         dataODP = new JSONArray(json);
                         runOnUiThread(() -> tampilkanDialogODP(latUser, lonUser));
                     } catch (JSONException e) {
-                        runOnUiThread(() -> Toast.makeText(TambahOdpActivity.this, "Format JSON salah: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                        runOnUiThread(() -> Toast.makeText(EditOdpActivity.this, "Format JSON salah: " + e.getMessage(), Toast.LENGTH_SHORT).show());
                     }
                 }
             }
@@ -450,9 +446,6 @@ public class TambahOdpActivity extends AppCompatActivity {
             Toast.makeText(this, "Error JSON: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
-
-
-
     private void kirimData(String idjalur) {
         String note = notetxt.getText().toString().trim();
 
@@ -479,15 +472,19 @@ public class TambahOdpActivity extends AppCompatActivity {
             return;
         }
 
-        String latitude = String.valueOf(lokasiTerpilih.getLatitude());
-        String longitude = String.valueOf(lokasiTerpilih.getLongitude());
+        String latitudeBaru = String.valueOf(lokasiTerpilih.getLatitude());
+        String longitudeBaru = String.valueOf(lokasiTerpilih.getLongitude());
+        String latitude = latitudeBaru.isEmpty() ? datalama.latitude : latitudeBaru;
+        String longitude = longitudeBaru.isEmpty() ? datalama.longitude : longitudeBaru;
+
+        String idODP = idOdpDipilih.isEmpty() ? datalama.terhubung_ke : idOdpDipilih;
 
         Log.d("DATA_INPUT", "id jalur: " + idjalur +
                 ", type: " + type +
                 ", port: " + port +
                 ", lat: " + latitude +
                 ", lon: " + longitude +
-                ", terhubung_ke: " + idOdpDipilih);
+                ", terhubung_ke: " + idODP);
 
         RequestBody formBody = new FormBody.Builder()
                 .add("post", "Tambahodpbaru") // ⬅️ FIX
@@ -495,7 +492,7 @@ public class TambahOdpActivity extends AppCompatActivity {
                 .add("idjalur", idjalur)
                 .add("latitude", latitude)
                 .add("longitude", longitude)
-                .add("idodp", idOdpDipilih)
+                .add("idodp", idODP)
                 .add("type", type)
                 .add("port", port)
                 .add("note", note)
@@ -510,7 +507,7 @@ public class TambahOdpActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call call, IOException e) {
                 runOnUiThread(() ->
-                        Toast.makeText(TambahOdpActivity.this,
+                        Toast.makeText(EditOdpActivity.this,
                                 "Gagal: " + e.getMessage(),
                                 Toast.LENGTH_SHORT).show());
             }
@@ -527,20 +524,20 @@ public class TambahOdpActivity extends AppCompatActivity {
                         String message = json.optString("message");
 
                         if ("success".equalsIgnoreCase(status)) {
-                            Intent intent = new Intent(TambahOdpActivity.this, LapanganActivity.class);
+                            Intent intent = new Intent(EditOdpActivity.this, LapanganActivity.class);
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                             startActivity(intent);
                             finish();
-                            Toast.makeText(TambahOdpActivity.this,
+                            Toast.makeText(EditOdpActivity.this,
                                     "Berhasil: " + message,
                                     Toast.LENGTH_LONG).show();
                         } else {
-                            Toast.makeText(TambahOdpActivity.this,
+                            Toast.makeText(EditOdpActivity.this,
                                     "Gagal: " + message,
                                     Toast.LENGTH_LONG).show();
                         }
                     } catch (JSONException e) {
-                        Toast.makeText(TambahOdpActivity.this,
+                        Toast.makeText(EditOdpActivity.this,
                                 "Respon server tidak valid",
                                 Toast.LENGTH_LONG).show();
                     }
@@ -560,4 +557,6 @@ public class TambahOdpActivity extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
+
+
 }

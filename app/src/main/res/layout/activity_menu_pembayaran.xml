@@ -311,7 +311,14 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="20dp"
-            android:background="@drawable/circular_overlay2" />
+            android:background="@drawable/circular_overlay2" >
+
+            <ListView
+                android:id="@+id/listTagihan"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:layout_editor_absoluteY="299dp" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </LinearLayout>
 

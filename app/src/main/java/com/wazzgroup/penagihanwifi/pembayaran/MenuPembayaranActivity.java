@@ -2,7 +2,9 @@ package com.wazzgroup.penagihanwifi.pembayaran;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,13 +20,17 @@ import com.wazzgroup.penagihanwifi.TeknisiActivity;
 import com.wazzgroup.penagihanwifi.pembayaran.lunas.TagihanLunasActivity;
 import com.wazzgroup.penagihanwifi.pembayaran.nunggak.TagihanNunggakActivity;
 import com.wazzgroup.penagihanwifi.pembayaran.tagihan.ManajemenPenagihan;
+import com.wazzgroup.penagihanwifi.pembayaran.tagihan.TagihanAdapter;
+import com.wazzgroup.penagihanwifi.pembayaran.tagihan.TagihanBelumLunas;
 import com.wazzgroup.penagihanwifi.pembayaran.telat.TagihanTelatActivity;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.Locale;
 
 import okhttp3.Call;
@@ -37,7 +43,12 @@ import okhttp3.Response;
 
 public class MenuPembayaranActivity extends AppCompatActivity {
     TextView pemasukan,telatpemasukan,tagihan,lunas,nunggakk,telatt;
+    String url = GlobalHelper.BASE_URL;
 
+    private ListView listView;
+    private EditText searchBox;
+    private ArrayList<TagihanBelumLunas> listData = new ArrayList<>();
+    private TagihanAdapter adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,7 +67,10 @@ public class MenuPembayaranActivity extends AppCompatActivity {
         nunggakk = findViewById(R.id.nunggak);
         ImageView kembali = findViewById(R.id.backtolist);
         kembali.setOnClickListener(v -> kembaliKeList());
+        listView = findViewById(R.id.listTagihan);
 
+        adapter = new TagihanAdapter(this, listData);
+        listView.setAdapter(adapter);
         ceksaldo();
         findViewById(R.id.menu1).setOnClickListener(v ->
                 startActivity(new Intent(this, ManajemenPenagihan.class))
@@ -73,6 +87,7 @@ public class MenuPembayaranActivity extends AppCompatActivity {
         findViewById(R.id.menu4).setOnClickListener(v ->
                 startActivity(new Intent(this, TagihanNunggakActivity.class))
         );
+        cariTagihan();
     }
 
     private void ceksaldo() {
@@ -149,6 +164,61 @@ public class MenuPembayaranActivity extends AppCompatActivity {
             }
         });
     }
+    private void cariTagihan() {
+        OkHttpClient client = new OkHttpClient();
+        String iduserr = GlobalHelper.getIdUser(this);
+
+        RequestBody formBody = new FormBody.Builder()
+                .add("api", "search_belum_bayar")
+                .add("user", iduserr)
+                .build();
+
+        Request request = new Request.Builder()
+                .url(url)
+                .post(formBody)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override public void onFailure(Call call, IOException e) {
+                runOnUiThread(() -> Toast.makeText(MenuPembayaranActivity.this, "Gagal cari data", Toast.LENGTH_SHORT).show());
+            }
+
+            @Override public void onResponse(Call call, Response response) throws IOException {
+                String hasil = response.body().string();
+                runOnUiThread(() -> {
+                    try {
+                        JSONObject json = new JSONObject(hasil);
+                        JSONArray data = json.getJSONArray("data");
+
+                        listData.clear();
+
+                        for (int i = 0; i < data.length(); i++) {
+                            JSONObject obj = data.getJSONObject(i);
+                            TagihanBelumLunas t = new TagihanBelumLunas();
+                            t.idPelanggan = obj.getString("id_pelanggan");
+                            t.nama = obj.getString("nama");
+                            t.hp = obj.getString("hp");
+                            t.paket = obj.getString("nama_paket");
+                            t.totalTagihan = obj.getString("total_tagihan");
+                            t.rincianBulan = obj.getString("rincian_bulan_tagihan");
+                            t.nama_area = obj.getString("nama_area");
+                            t.tanggalpenagihan = obj.getString("tanggal_dibuat");
+                            t.latitude = obj.getString("latitude");
+                            t.longitude = obj.getString("longitude");
+
+                            listData.add(t);
+                        }
+
+                        adapter.notifyDataSetChanged();
+
+                    } catch (Exception e) {
+                        Toast.makeText(MenuPembayaranActivity.this, "Format data salah", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
+    }
+
     private void kembaliKeList() {
         Intent intent = new Intent(this, TeknisiActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);

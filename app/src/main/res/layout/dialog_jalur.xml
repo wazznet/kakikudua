@@ -36,8 +36,9 @@
         android:id="@+id/btnDelete"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Hapus"
+        android:layout_marginTop="10dp"
         android:backgroundTint="#F44336"
+        android:text="Hapus"
         android:textColor="#FFFFFF"
-        android:layout_marginTop="10dp"/>
+        android:visibility="gone" />
 </LinearLayout>

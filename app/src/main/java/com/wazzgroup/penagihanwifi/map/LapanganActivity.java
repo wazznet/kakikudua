@@ -24,6 +24,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -166,6 +167,7 @@ public class LapanganActivity extends AppCompatActivity {
                     .setBackgroundDrawableResource(android.R.color.transparent);
         }
 
+
         EditText edtNamaJalur = view.findViewById(R.id.edtNamaJalur);
         Button btnSimpan = view.findViewById(R.id.btnSimpan);
         Button btnBatal = view.findViewById(R.id.btnBatal);
@@ -247,12 +249,10 @@ public class LapanganActivity extends AppCompatActivity {
         Button btnDelete = dialogView.findViewById(R.id.btnDelete);
         Button map = dialogView.findViewById(R.id.btnmap);
         map.setVisibility(View.VISIBLE);
-//        btnEdit.setOnClickListener(v -> {
-//            dialog.dismiss();
-//            Intent intent = new Intent(LapanganActivity.this, EditPelangganActivity.class);
-//            intent.putExtra("jalur", new Gson().toJson(p));
-//            startActivity(intent);
-//        });
+        btnEdit.setOnClickListener(v -> {
+            dialog.dismiss();
+            editjalur(p.nama);
+        });
 
 
         map.setOnClickListener(v -> {
@@ -261,13 +261,100 @@ public class LapanganActivity extends AppCompatActivity {
             intent.putExtra("map", new Gson().toJson(p));
             startActivity(intent);
         });
-        btnDelete.setOnClickListener(v -> {
-            dialog.dismiss();
-            // TODO: Kirim API untuk hapus pelanggan
-            Toast.makeText(this, "Hapus " + p.nama, Toast.LENGTH_SHORT).show();
+//        btnDelete.setOnClickListener(v -> {
+//            dialog.dismiss();
+//            // TODO: Kirim API untuk hapus pelanggan
+//            Toast.makeText(this, "Hapus " + p.nama, Toast.LENGTH_SHORT).show();
+//        });
+    }
+    private void editjalur(String id) {
+
+        AlertDialog.Builder builder =
+                new AlertDialog.Builder(this);
+
+        View view = getLayoutInflater()
+                .inflate(R.layout.dialog_tambah_jalur, null);
+        builder.setView(view);
+        builder.setCancelable(false);
+
+        dialogTambahJalur = builder.create();
+
+        // 🔥 WAJIB: set animasi di WINDOW
+        if (dialogTambahJalur.getWindow() != null) {
+            dialogTambahJalur.getWindow()
+                    .setWindowAnimations(R.style.DialogTopAnimation);
+            dialogTambahJalur.getWindow()
+                    .setBackgroundDrawableResource(android.R.color.transparent);
+        }
+        TextView ubahnama = view.findViewById(R.id.tvTitle);
+        EditText edtNamaJalur = view.findViewById(R.id.edtNamaJalur);
+        Button btnSimpan = view.findViewById(R.id.btnSimpan);
+        Button btnBatal = view.findViewById(R.id.btnBatal);
+        ubahnama.setText("Edit Jalur Baru");
+        btnBatal.setOnClickListener(v -> dialogTambahJalur.dismiss());
+
+        btnSimpan.setOnClickListener(v -> {
+            String namaJalur = edtNamaJalur.getText().toString().trim();
+
+            if (namaJalur.isEmpty()) {
+                edtNamaJalur.setError("Nama jalur tidak boleh kosong");
+                return;
+            }
+
+            btnSimpan.setEnabled(false);
+            Editjalur(namaJalur,id);
+        });
+
+        dialogTambahJalur.show();
+    }
+    private void Editjalur(String namaJalur,String id) {
+        OkHttpClient client = new OkHttpClient();
+        String iduserr = GlobalHelper.getIdUser(this);
+        RequestBody formBody = new FormBody.Builder()
+                .add("api", "edit_jalur")
+                .add("user", iduserr) // ganti dengan user login jika perlu
+                .add("id", id)
+                .add("nama_jalur", namaJalur)
+                .build();
+
+        Request request = new Request.Builder()
+                .url(url)
+                .post(formBody)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                runOnUiThread(() -> Toast.makeText(LapanganActivity.this, "Gagal tambah jalur: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String result = response.body().string();
+
+                runOnUiThread(() -> {
+                    try {
+                        JSONObject obj = new JSONObject(result);
+                        String status = obj.getString("status");
+                        String message = obj.getString("message");
+
+                        if (status.equalsIgnoreCase("success")) {
+                            Toast.makeText(LapanganActivity.this, "Jalur berhasil di edit", Toast.LENGTH_SHORT).show();
+
+                            Intent intent = getIntent();
+                            finish();
+                            startActivity(intent);
+                        } else {
+                            Toast.makeText(LapanganActivity.this, "Gagal: " + message, Toast.LENGTH_SHORT).show();
+                        }
+
+                    } catch (Exception e) {
+                        Toast.makeText(LapanganActivity.this, "Respon tidak valid", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
         });
     }
-
     private void ambilDataPelanggan(int start) {
         isLoading = true;
 

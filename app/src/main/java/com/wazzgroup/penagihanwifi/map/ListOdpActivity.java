@@ -16,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -25,6 +26,7 @@ import com.google.gson.Gson;
 import com.wazzgroup.penagihanwifi.GlobalHelper;
 import com.wazzgroup.penagihanwifi.R;
 import com.wazzgroup.penagihanwifi.TeknisiActivity;
+import com.wazzgroup.penagihanwifi.client.ClientActivity;
 import com.wazzgroup.penagihanwifi.client.DetailPelangganActivity;
 import com.wazzgroup.penagihanwifi.client.EditPelangganActivity;
 import com.wazzgroup.penagihanwifi.client.Pelanggan;
@@ -216,13 +218,14 @@ public class ListOdpActivity extends AppCompatActivity {
         Button btnlokasi = dialogView.findViewById(R.id.btnLokasi);
         Button btnDelete = dialogView.findViewById(R.id.btnDelete);
         btnlokasi.setVisibility(View.VISIBLE);
-//
-//        btnEdit.setOnClickListener(v -> {
-//            dialog.dismiss();
-//            Intent intent = new Intent(ListOdpActivity.this, EditPelangganActivity.class);
-//            intent.putExtra("data_pelanggan", new Gson().toJson(p));
-//            startActivity(intent);
-//        });
+        btnDelete.setVisibility(View.VISIBLE);
+
+        btnEdit.setOnClickListener(v -> {
+            dialog.dismiss();
+            Intent intent = new Intent(ListOdpActivity.this, EditOdpActivity.class);
+            intent.putExtra("data_odp", new Gson().toJson(p));
+            startActivity(intent);
+        });
 
         btnlokasi.setOnClickListener(v -> {
             dialog.dismiss();
@@ -254,9 +257,76 @@ public class ListOdpActivity extends AppCompatActivity {
         });
 
         btnDelete.setOnClickListener(v -> {
-            dialog.dismiss();
-            // TODO: Kirim API untuk hapus pelanggan
-            Toast.makeText(this, "Hapus " + p.nama, Toast.LENGTH_SHORT).show();
+            new AlertDialog.Builder(ListOdpActivity.this)
+                    .setTitle("Konfirmasi Hapus")
+                    .setMessage("Yakin ingin menghapus odp " + p.nama + "?")
+                    .setCancelable(false)
+                    .setPositiveButton("Hapus", (dialogConfirm, which) -> {
+
+                        // 👉 EKSEKUSI HAPUS DI SINI
+                        dialog.dismiss();
+
+                        OkHttpClient client = new OkHttpClient();
+                        String iduserr = GlobalHelper.getIdUser(this);
+
+                        RequestBody formBody = new FormBody.Builder()
+                                .add("api", "hapus_odp")
+                                .add("user", iduserr)
+                                .add("id", p.id)
+                                .build();
+
+                        Request request = new Request.Builder()
+                                .url(url)
+                                .post(formBody)
+                                .build();
+
+                        client.newCall(request).enqueue(new Callback() {
+                            @Override
+                            public void onFailure(Call call, IOException e) {
+                                runOnUiThread(() -> {
+                                    isLoading = false;
+                                    Toast.makeText(ListOdpActivity.this,
+                                            "Gagal menghapus data",
+                                            Toast.LENGTH_SHORT).show();
+                                });
+                            }
+
+                            @Override
+                            public void onResponse(Call call, Response response) throws IOException {
+                                String hasil = response.body().string();
+
+                                runOnUiThread(() -> {
+                                    try {
+                                        JSONObject json = new JSONObject(hasil);
+                                        String status = json.getString("status");
+
+                                        if ("success".equals(status)) {
+                                            Toast.makeText(ListOdpActivity.this,
+                                                      p.nama + " berhasil dihapus",
+                                                    Toast.LENGTH_SHORT).show();
+
+                                            Intent intent = new Intent(ListOdpActivity.this, LapanganActivity.class);
+                                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                            startActivity(intent);
+                                            finish();
+                                        } else {
+                                            Toast.makeText(ListOdpActivity.this,
+                                                    "Gagal menghapus pelanggan",
+                                                    Toast.LENGTH_SHORT).show();
+                                        }
+
+                                    } catch (Exception e) {
+                                        Toast.makeText(ListOdpActivity.this,
+                                                "Format respon salah",
+                                                Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                            }
+                        });
+
+                    })
+                    .setNegativeButton("Batal", (dialogConfirm, which) -> dialogConfirm.dismiss())
+                    .show();
         });
     }
 
@@ -307,8 +377,11 @@ public class ListOdpActivity extends AppCompatActivity {
                             p.id_jalur = obj.getString("id_jalur");
                             p.type = obj.getString("type");
                             p.port = obj.getString("port");
+                            p.note = obj.getString("note");
                             p.latitude = obj.getString("latitude");
                             p.longitude = obj.getString("longitude");
+                            p.nama_jalur = obj.getString("nama_jalur");
+                            p.terhubung_ke = obj.getString("terhubung_ke");
                             p.nama_terhubung = obj.getString("nama_terhubung");
                             p.banyak_clinet = obj.getString("banyak_clinet");
                             LapanganList.add(p);

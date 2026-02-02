@@ -14,6 +14,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.gson.Gson;
@@ -237,10 +238,79 @@ public class ClientActivity extends AppCompatActivity {
         });
 
         btnDelete.setOnClickListener(v -> {
-            dialog.dismiss();
-            // TODO: Kirim API untuk hapus pelanggan
-            Toast.makeText(this, "Hapus " + p.nama, Toast.LENGTH_SHORT).show();
+
+            new AlertDialog.Builder(ClientActivity.this)
+                    .setTitle("Konfirmasi Hapus")
+                    .setMessage("Yakin ingin menghapus pelanggan " + p.nama + "?\n\nSemua tagihan pelanggan ini juga akan terhapus.")
+                    .setCancelable(false)
+                    .setPositiveButton("Hapus", (dialogConfirm, which) -> {
+
+                        // 👉 EKSEKUSI HAPUS DI SINI
+                        dialog.dismiss();
+
+                        OkHttpClient client = new OkHttpClient();
+                        String iduserr = GlobalHelper.getIdUser(this);
+
+                        RequestBody formBody = new FormBody.Builder()
+                                .add("api", "hapus")
+                                .add("user", iduserr)
+                                .add("id", p.id)
+                                .build();
+
+                        Request request = new Request.Builder()
+                                .url(url)
+                                .post(formBody)
+                                .build();
+
+                        client.newCall(request).enqueue(new Callback() {
+                            @Override
+                            public void onFailure(Call call, IOException e) {
+                                runOnUiThread(() -> {
+                                    isLoading = false;
+                                    Toast.makeText(ClientActivity.this,
+                                            "Gagal menghapus data",
+                                            Toast.LENGTH_SHORT).show();
+                                });
+                            }
+
+                            @Override
+                            public void onResponse(Call call, Response response) throws IOException {
+                                String hasil = response.body().string();
+
+                                runOnUiThread(() -> {
+                                    try {
+                                        JSONObject json = new JSONObject(hasil);
+                                        String status = json.getString("status");
+
+                                        if ("success".equals(status)) {
+                                            Toast.makeText(ClientActivity.this,
+                                                    "Pelanggan " + p.nama + " berhasil dihapus",
+                                                    Toast.LENGTH_SHORT).show();
+
+                                            Intent intent = new Intent(ClientActivity.this, ClientActivity.class);
+                                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                            startActivity(intent);
+                                            finish();
+                                        } else {
+                                            Toast.makeText(ClientActivity.this,
+                                                    "Gagal menghapus pelanggan",
+                                                    Toast.LENGTH_SHORT).show();
+                                        }
+
+                                    } catch (Exception e) {
+                                        Toast.makeText(ClientActivity.this,
+                                                "Format respon salah",
+                                                Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                            }
+                        });
+
+                    })
+                    .setNegativeButton("Batal", (dialogConfirm, which) -> dialogConfirm.dismiss())
+                    .show();
         });
+
     }
 
     private void ambilDataPelanggan(int start) {

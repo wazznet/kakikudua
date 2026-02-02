@@ -19,4 +19,6 @@ public class lapangan {
     public String nama_terhubung;
     public String banyak_clinet;
     public String pan;
+    public String nama_jalur;
+    public String note;
 }
