@@ -50,7 +50,7 @@ public class LapanganAdapter extends ArrayAdapter<lapangan> {
 
         TextView txtNama = convertView.findViewById(R.id.txtNama);
         TextView txtHp = convertView.findViewById(R.id.txtHp);
-        txtNama.setText((lapangan.nama == null || lapangan.nama.isEmpty()) ? "Belum di tambahkan" : (position+1) + ". " + lapangan.nama+" (" + lapangan.id+")");
+        txtNama.setText((lapangan.nama == null || lapangan.nama.isEmpty()) ? "Belum di tambahkan" : (position+1) + ". " + lapangan.nama);
 
         if(Objects.equals(lapangan.pan, "pan")){
             txtHp.setText("");

@@ -1,7 +1,10 @@
 package com.wazzgroup.penagihanwifi.pembayaran;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -87,6 +90,20 @@ public class MenuPembayaranActivity extends AppCompatActivity {
         findViewById(R.id.menu4).setOnClickListener(v ->
                 startActivity(new Intent(this, TagihanNunggakActivity.class))
         );
+        listView.setOnItemLongClickListener((parent, view, position, id) -> {
+            TagihanBelumLunas data = listData.get(position);
+            tampilkanDialogPilihan(data);
+            return true; // Supaya event long click tidak lanjut ke click biasa
+        });
+        listView.setOnItemClickListener((parent, view, position, id) -> {
+            TagihanBelumLunas data = listData.get(position);
+
+            Intent intent = new Intent(MenuPembayaranActivity.this, PembayaranActivity.class);
+            intent.putExtra("id_pelanggan", data.idPelanggan);
+            intent.putExtra("darihalaman", "menu");
+
+            startActivity(intent);
+        });
         cariTagihan();
     }
 
@@ -164,12 +181,83 @@ public class MenuPembayaranActivity extends AppCompatActivity {
             }
         });
     }
+    private void tampilkanDialogPilihan(TagihanBelumLunas p) {
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_penagihan_pelanggan, null);
+        android.app.AlertDialog dialog = new android.app.AlertDialog.Builder(this)
+                .setView(dialogView)
+                .setCancelable(true)
+                .create();
+
+        dialog.show();
+
+        Button btnChat = dialogView.findViewById(R.id.btnChat);
+        Button btnLokasi = dialogView.findViewById(R.id.btnLokasi);
+
+        btnLokasi.setOnClickListener(v -> {
+            dialog.dismiss();
+            Toast.makeText(this, "lokasi langganan " + p.nama, Toast.LENGTH_SHORT).show();
+            String latitude = p.latitude;
+            String longitude = p.longitude;
+
+            if (latitude == null || longitude == null || latitude.isEmpty() || longitude.isEmpty()) {
+                Toast.makeText(this, "lokasi belum di setting" + p.nama, Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            String geoUri = "geo:0,0?q=" + latitude + "," + longitude + "(Lokasi Pelanggan)";
+            Intent geoIntent = new Intent(Intent.ACTION_VIEW, android.net.Uri.parse(geoUri));
+
+            try {
+                startActivity(geoIntent);
+            } catch (Exception e) {
+                String webUri = "https://www.google.com/maps/search/?api=1&query=" + latitude + "," + longitude;
+                Intent webIntent = new Intent(Intent.ACTION_VIEW, android.net.Uri.parse(webUri));
+
+                try {
+                    startActivity(webIntent);
+                } catch (Exception ex) {
+                    Toast.makeText(this, "Tidak bisa membuka lokasi di Maps atau Browser", Toast.LENGTH_SHORT).show();
+
+                }
+            }
+        });
+        btnChat.setOnClickListener(v -> {
+            dialog.dismiss();
+
+            String nomorHP = p.hp;
+
+            if (nomorHP == null || nomorHP.isEmpty()) {
+                Toast.makeText(this, "Nomor HP tidak tersedia", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            // Pastikan format nomor internasional, contoh: 628xxxxx
+            if (nomorHP.startsWith("0")) {
+                nomorHP = "62" + nomorHP.substring(1);
+            }
+
+            String pesan = "Halo " + p.nama + ", ini dari tim penagihan. Mohon konfirmasi tagihan Anda ya.";
+            String url = "https://wa.me/" + nomorHP + "?text=" + Uri.encode(pesan);
+
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setData(Uri.parse(url));
+
+            try {
+                startActivity(intent);
+            } catch (Exception e) {
+                Toast.makeText(this, "WhatsApp tidak terpasang", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
+
+    }
     private void cariTagihan() {
         OkHttpClient client = new OkHttpClient();
         String iduserr = GlobalHelper.getIdUser(this);
 
         RequestBody formBody = new FormBody.Builder()
-                .add("api", "search_belum_bayar")
+                .add("api", "tagihan_hari_ini")
                 .add("user", iduserr)
                 .build();
 

@@ -90,11 +90,11 @@ public class DetailOdpActivity extends AppCompatActivity {
         TextView port = findViewById(R.id.port);
         TextView lokasi = findViewById(R.id.lokasi);
 
-        nama.setText(o.nama);
-        jalur.setText(o.id_jalur);
-        type.setText(o.type);
-        port.setText(o.port);
-        lokasi.setText(o.longitude + "," + o.latitude);
+        nama.setText(":"+o.nama);
+        jalur.setText(":"+o.nama_jalur);
+        type.setText(":"+o.type);
+        port.setText(":"+o.port);
+        lokasi.setText(":"+o.longitude + "," + o.latitude);
 
         // Pelanggan list
         listView = findViewById(R.id.listPelanggan);

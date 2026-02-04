@@ -70,8 +70,8 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="16dp"
+        android:layout_height="match_parent"
+        android:layout_marginTop="120dp"
         android:background="@drawable/cr18bffffff"
         android:orientation="vertical"
         android:padding="16dp"
@@ -83,7 +83,7 @@
         <ListView
             android:id="@+id/listPelanggan"
             android:layout_width="match_parent"
-            android:layout_height="600dp" />
+            android:layout_height="match_parent" />
 
     </LinearLayout>
 

@@ -412,6 +412,13 @@ public class PembayaranActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
 
+        }else if ("menu".equals(darihalaman)) {
+
+            Intent intent = new Intent(this, MenuPembayaranActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            finish();
+
         }   else {
 
             Intent intent = new Intent(this, ManajemenPenagihan.class);

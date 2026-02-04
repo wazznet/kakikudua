@@ -201,7 +201,7 @@ public class ShopGameActivity extends AppCompatActivity {
                 ngame = "ff";
             }
 
-            String url = "https://validator.ramdanwahyu82.workers.dev/"+ngame+"?id=" + id + "&server=" + zone;
+                String url = "https://validator.ramdanwahyu82.workers.dev/"+ngame+"?id=" + id + "&server=" + zone;
 
             Request request = new Request.Builder()
                     .url(url)

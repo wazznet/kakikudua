@@ -972,7 +972,8 @@
                         android:text="Ping Meta"
                         android:textAlignment="center"
                         android:textSize="8sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:textColor="#000000" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -1007,7 +1008,8 @@
                         android:text="Ping Meta"
                         android:textAlignment="center"
                         android:textSize="8sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:textColor="#000000" />
 
                 </LinearLayout>
 
@@ -1044,7 +1046,8 @@
                         android:textAlignment="center"
 
                         android:textSize="8sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:textColor="#000000" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -1080,7 +1083,8 @@
                         android:text="Ping Meta"
                         android:textAlignment="center"
                         android:textSize="8sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:textColor="#000000" />
                 </LinearLayout>
 
             </LinearLayout>
