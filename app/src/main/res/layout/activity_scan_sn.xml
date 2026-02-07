@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".client.ClientActivity"
+    android:background="#113F67">
+
+
+    <ImageView
+        android:id="@+id/back2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="36dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.021"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/baseline_arrow_back_24" />
+
+    <TextView
+        android:id="@+id/textView7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:text="Edit SN Modem Pelanggan"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/linearLayout11"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="84dp"
+        android:background="@drawable/cr18bffffff"
+        android:orientation="vertical"
+        android:padding="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/nama"
+            android:layout_width="300dp"
+            android:layout_height="38dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/edittext_border_blue"
+            android:drawableStart="@drawable/baseline_account_circle_24"
+            android:drawablePadding="10dp"
+            android:ems="10"
+            android:hint="nama"
+            android:inputType="text"
+            android:padding="10dp"
+
+            android:shadowRadius="20"
+            android:textColor="#000000"
+            android:textColorHint="#000000"
+            android:textColorLink="#000000"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textView71"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Scan SN"
+            android:textColor="#000000"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/nama" />
+
+        <FrameLayout
+            android:id="@+id/frameLayout"
+            android:layout_width="400dp"
+            android:layout_height="70dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView71">
+            <!-- Overlay gelap -->
+            <androidx.camera.view.PreviewView
+                android:id="@+id/previewView"
+                android:layout_width="400dp"
+                android:layout_height="70dp"
+                android:layout_gravity="center|top" />
+
+            <View
+                android:layout_width="400dp"
+                android:layout_height="70dp"
+                android:layout_gravity="center|top"
+                android:background="#88000000" />
+
+            <!-- Kotak scan -->
+            <View
+                android:id="@+id/scanBox"
+                android:layout_width="400dp"
+                android:layout_height="70dp"
+                android:layout_gravity="center|top"
+                android:background="@drawable/overlay_border" />
+
+        </FrameLayout>
+
+        <EditText
+            android:id="@+id/txtResult"
+            android:layout_width="300dp"
+            android:layout_height="38dp"
+            android:layout_marginTop="24dp"
+            android:background="@drawable/edittext_border_blue"
+            android:drawableStart="@drawable/baseline_library_books_24"
+            android:drawablePadding="10dp"
+            android:ems="10"
+            android:hint="SN"
+            android:inputType="text"
+            android:padding="10dp"
+
+            android:shadowRadius="20"
+            android:textColor="#000000"
+            android:textColorHint="#000000"
+            android:textColorLink="#000000"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.529"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/frameLayout" />
+
+        <ImageButton
+            android:id="@+id/btnFlash"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_gravity="bottom|end"
+            android:layout_marginTop="32dp"
+            android:background="@android:color/transparent"
+            android:contentDescription="Flash"
+            android:src="@drawable/baseline_flashlight_on_24"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.885"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/txtResult"
+            app:tint="#000000" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/simpan"
+            android:layout_width="300dp"
+            android:layout_height="40dp"
+            android:background="@drawable/dalamtopbutton"
+            android:clickable="true"
+            android:focusable="true"
+            android:text="simpan"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/txtResult">
+
+            <TextView
+                android:id="@+id/textView10"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="simpan"
+
+                android:textColor="#FFFFFF"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+
+

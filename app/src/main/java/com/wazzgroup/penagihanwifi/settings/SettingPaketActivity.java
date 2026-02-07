@@ -1,10 +1,15 @@
 package com.wazzgroup.penagihanwifi.settings;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -55,34 +60,25 @@ public class SettingPaketActivity extends AppCompatActivity {
         });
         Button btnTambahArea = findViewById(R.id.button);
         btnTambahArea.setOnClickListener(v -> {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("Tambah Paket Baru");
 
-            // Layout untuk menampung 2 input
-            LinearLayout layout = new LinearLayout(this);
-            layout.setOrientation(LinearLayout.VERTICAL);
-            layout.setPadding(50, 20, 50, 10);
+            Dialog dialog = new Dialog(this);
+            dialog.setContentView(R.layout.dialog_tambah_paket);
+            dialog.setCancelable(true);
 
-            final EditText inputNama = new EditText(this);
-            inputNama.setHint("Nama paket");
-            inputNama.setInputType(InputType.TYPE_CLASS_TEXT);
-            layout.addView(inputNama);
+            EditText etNamaPaket = dialog.findViewById(R.id.etNamaPaket);
+            EditText etHarga = dialog.findViewById(R.id.etHarga);
+            Button btnSimpan = dialog.findViewById(R.id.btnSimpan);
+            Button btnBatal = dialog.findViewById(R.id.btnBatal);
 
-            final EditText inputHarga = new EditText(this);
-            inputHarga.setHint("Harga");
-            inputHarga.setInputType(InputType.TYPE_CLASS_NUMBER);
-            layout.addView(inputHarga);
-
-            builder.setView(layout);
-
-            builder.setPositiveButton("Simpan", (dialog, which) -> {
-                String namaPaket = inputNama.getText().toString().trim();
-                String hargaStr = inputHarga.getText().toString().trim();
+            btnSimpan.setOnClickListener(view -> {
+                String namaPaket = etNamaPaket.getText().toString().trim();
+                String hargaStr = etHarga.getText().toString().trim();
 
                 if (namaPaket.isEmpty()) {
                     Toast.makeText(this, "Nama paket tidak boleh kosong", Toast.LENGTH_SHORT).show();
                     return;
                 }
+
                 if (hargaStr.isEmpty()) {
                     Toast.makeText(this, "Harga tidak boleh kosong", Toast.LENGTH_SHORT).show();
                     return;
@@ -94,14 +90,28 @@ public class SettingPaketActivity extends AppCompatActivity {
                     return;
                 }
 
-                // Panggil fungsi simpan ke API
                 tambahPaketKeApi(namaPaket, harga);
+                dialog.dismiss();
             });
 
-            builder.setNegativeButton("Batal", (dialog, which) -> dialog.cancel());
+            btnBatal.setOnClickListener(view -> dialog.dismiss());
 
-            builder.show();
+            dialog.show();
+            if (dialog.getWindow() != null) {
+                dialog.getWindow().setLayout(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT
+                );
+
+                dialog.getWindow().setBackgroundDrawable(
+                        new ColorDrawable(Color.TRANSPARENT)
+                );
+
+                dialog.getWindow().setGravity(Gravity.CENTER);
+            }
+
         });
+
         fetchArea();
     }
     private void tambahPaketKeApi(String namaArea,int harga) {

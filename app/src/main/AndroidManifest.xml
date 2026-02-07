@@ -75,6 +75,9 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".acs.ScanSnActivity"
+            android:exported="false" />
+        <activity
             android:name=".map.EditOdpActivity"
             android:exported="false" />
         <activity

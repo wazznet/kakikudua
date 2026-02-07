@@ -1156,4 +1156,16 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/baseline_menu_24" />
 
+    <TextView
+        android:id="@+id/tvCopyright2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:text="© 2024 WAZZ.NET"
+        android:textColor="@color/black"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -21,6 +21,7 @@ import com.google.gson.Gson;
 import com.wazzgroup.penagihanwifi.GlobalHelper;
 import com.wazzgroup.penagihanwifi.R;
 import com.wazzgroup.penagihanwifi.TeknisiActivity;
+import com.wazzgroup.penagihanwifi.acs.ScanSnActivity;
 import com.wazzgroup.penagihanwifi.mikrotik.TambahMikrotik;
 
 import org.json.JSONArray;
@@ -120,6 +121,7 @@ public class ClientActivity extends AppCompatActivity {
         dialog.show();
 
         Button btnEdit = dialogView.findViewById(R.id.btnEdit);
+        Button btntambahsn = dialogView.findViewById(R.id.btnSn);
         Button btnStop = dialogView.findViewById(R.id.btnStop);
         Button btnStart = dialogView.findViewById(R.id.btnstart);
         Button btnDelete = dialogView.findViewById(R.id.btnDelete);
@@ -127,6 +129,12 @@ public class ClientActivity extends AppCompatActivity {
         btnEdit.setOnClickListener(v -> {
             dialog.dismiss();
             Intent intent = new Intent(ClientActivity.this, EditPelangganActivity.class);
+            intent.putExtra("data_pelanggan", new Gson().toJson(p));
+            startActivity(intent);
+        });
+        btntambahsn.setOnClickListener(v -> {
+            dialog.dismiss();
+            Intent intent = new Intent(ClientActivity.this, ScanSnActivity.class);
             intent.putExtra("data_pelanggan", new Gson().toJson(p));
             startActivity(intent);
         });
@@ -480,6 +488,12 @@ public class ClientActivity extends AppCompatActivity {
     }
     private void kembaliKeList() {
         Intent intent = new Intent(this, TeknisiActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        finish();
+    }
+    private void kesn() {
+        Intent intent = new Intent(this, ScanSnActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
         finish();

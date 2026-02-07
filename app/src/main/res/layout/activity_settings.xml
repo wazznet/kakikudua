@@ -86,17 +86,6 @@
                 app:layout_constraintStart_toEndOf="@+id/imageView12"
                 app:layout_constraintTop_toBottomOf="@+id/namawifi" />
 
-            <TextView
-                android:id="@+id/masaaktif"
-                android:layout_width="200dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
-                android:layout_marginTop="8dp"
-                android:text="TextView"
-                android:textColor="#000000"
-                app:layout_constraintStart_toEndOf="@+id/imageView12"
-                app:layout_constraintTop_toBottomOf="@+id/paketwifi" />
-
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -143,10 +132,10 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
 
-                android:onClick="onTextViewClick"
                 android:background="@drawable/edittext_border_blue"
                 android:drawableStart="@drawable/paket2"
                 android:drawableEnd="@drawable/arrow_forward"
+                android:onClick="onTextViewClick"
                 android:text="Paket"
                 android:textAlignment="textStart"
                 android:textColor="#000000"
@@ -202,10 +191,10 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="12dp"
                 android:layout_marginEnd="8dp"
-                android:onClick="onTextViewClick"
                 android:background="@drawable/edittext_border_blue"
                 android:drawableStart="@drawable/baseline_account_circle_24"
                 android:drawableEnd="@drawable/arrow_forward"
+                android:onClick="onTextViewClick"
                 android:text="sub akun"
                 android:textAlignment="textStart"
                 android:textColor="#000000"
@@ -221,10 +210,10 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
-                android:onClick="onTextViewClick"
                 android:background="@drawable/edittext_border_blue"
                 android:drawableStart="@drawable/baseline_add_24"
                 android:drawableEnd="@drawable/arrow_forward"
+                android:onClick="onTextViewClick"
                 android:text="Lain-lain"
                 android:textAlignment="textStart"
                 android:textColor="#000000"
@@ -240,10 +229,10 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
-                android:onClick="onTextViewClick"
                 android:background="@drawable/edittext_border_blue"
                 android:drawableStart="@drawable/baseline_android_24"
                 android:drawableEnd="@drawable/arrow_forward"
+                android:onClick="onTextViewClick"
                 android:text="Indormasi Developer"
                 android:textAlignment="textStart"
                 android:textColor="#000000"
@@ -259,10 +248,10 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
-                android:onClick="onTextViewClick"
                 android:background="@drawable/edittext_border_blue"
                 android:drawableStart="@drawable/baseline_logout_24"
                 android:drawableEnd="@drawable/arrow_forward"
+                android:onClick="onTextViewClick"
                 android:text="Logout"
                 android:textAlignment="textStart"
                 android:textColor="#000000"
@@ -270,8 +259,20 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tomboldev" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/tvCopyright3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="© 2024 WAZZ.NET"
+        android:textColor="@color/black"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,5 +1,6 @@
 package com.wazzgroup.penagihanwifi.settings;
 import android.annotation.SuppressLint;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -48,6 +49,8 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
             RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) holder.textView.getLayoutParams();
             params.setMargins(0, marginTopInPx, 0, 0); // left, top, right, bottom
             holder.textView.setLayoutParams(params);
+            holder.textView.setTextColor(Color.BLACK);
+
         }else{
             int hargafix = hargaku;
             holder.textView.setText((position + 1) + ". " + area.getNama() +" | Rp."+hargafix+ " | Total Pelanggan : " + area.getJumlah());
@@ -62,6 +65,8 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
             RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) holder.textView.getLayoutParams();
             params.setMargins(0, marginTopInPx, 0, 0); // left, top, right, bottom
             holder.textView.setLayoutParams(params);
+            holder.textView.setTextColor(Color.BLACK);
+
         }
         }
 

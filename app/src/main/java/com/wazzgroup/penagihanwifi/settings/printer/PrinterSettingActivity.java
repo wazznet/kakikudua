@@ -2,16 +2,19 @@ package com.wazzgroup.penagihanwifi.settings.printer;
 
 import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -19,6 +22,8 @@ import androidx.core.app.ActivityCompat;
 import com.dantsu.escposprinter.connection.bluetooth.BluetoothConnection;
 import com.dantsu.escposprinter.connection.bluetooth.BluetoothPrintersConnections;
 import com.wazzgroup.penagihanwifi.R;
+import com.wazzgroup.penagihanwifi.TeknisiActivity;
+import com.wazzgroup.penagihanwifi.settings.SettingsActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,12 +39,15 @@ public class PrinterSettingActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_printer_setting);
 
         listPrinter = findViewById(R.id.listPrinter);
         txtStatusPrinter = findViewById(R.id.txtStatusPrinter);
         btnHapusPrinter = findViewById(R.id.btnHapusPrinter);
 
+        ImageView kembali = findViewById(R.id.back2);
+        kembali.setOnClickListener(v -> kembaliKeList());
         tampilkanStatusPrinter();
 
         if (!BluetoothAdapter.getDefaultAdapter().isEnabled()) {
@@ -80,6 +88,16 @@ public class PrinterSettingActivity extends AppCompatActivity {
 
         for (BluetoothConnection printer : printers) {
             printerList.add(printer);
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return;
+            }
             names.add(
                     printer.getDevice().getName() + "\n" +
                             printer.getDevice().getAddress()
@@ -139,5 +157,11 @@ public class PrinterSettingActivity extends AppCompatActivity {
                 );
             }
         }
+    }
+    private void kembaliKeList() {
+        Intent intent = new Intent(this, SettingsActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        finish();
     }
 }

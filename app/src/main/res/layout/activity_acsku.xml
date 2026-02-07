@@ -63,7 +63,7 @@
 
             <TextView
                 android:id="@+id/textToCopy"
-                android:layout_width="250dp"
+                android:layout_width="220dp"
                 android:layout_height="wrap_content"
                 android:background="@drawable/circular_overlay3"
                 android:text="http://acsku.wazzgroup.com:7547"

@@ -16,6 +16,8 @@ import java.util.List;
 
 import android.text.InputType;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -59,31 +61,35 @@ public class SettingAreaActivity extends AppCompatActivity {
         });
         Button btnTambahArea = findViewById(R.id.button);
         btnTambahArea.setOnClickListener(v -> {
+
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("Tambah Area Baru");
+            LayoutInflater inflater = getLayoutInflater();
 
-            // Input field
-            final EditText input = new EditText(this);
-            input.setHint("Nama Area");
-            input.setInputType(InputType.TYPE_CLASS_TEXT);
-            builder.setView(input);
+            View dialogView = inflater.inflate(R.layout.dialog_tambah_area, null);
+            builder.setView(dialogView);
 
-            builder.setPositiveButton("Simpan", (dialog, which) -> {
-                String namaArea = input.getText().toString().trim();
+            AlertDialog dialog = builder.create();
+            dialog.show();
+
+            EditText edtNamaArea = dialogView.findViewById(R.id.edtNamaArea);
+            Button btnBatal = dialogView.findViewById(R.id.btnBatal);
+            Button btnSimpan = dialogView.findViewById(R.id.btnSimpan);
+
+            btnBatal.setOnClickListener(v1 -> dialog.dismiss());
+
+            btnSimpan.setOnClickListener(v1 -> {
+                String namaArea = edtNamaArea.getText().toString().trim();
 
                 if (namaArea.isEmpty()) {
-                    Toast.makeText(this, "Nama area tidak boleh kosong", Toast.LENGTH_SHORT).show();
+                    edtNamaArea.setError("Nama area tidak boleh kosong");
                     return;
                 }
 
-                // Panggil fungsi simpan ke API
-                tambahAreaKeApi(namaArea); // id_user contoh "123"
+                tambahAreaKeApi(namaArea);
+                dialog.dismiss();
             });
-
-            builder.setNegativeButton("Batal", (dialog, which) -> dialog.cancel());
-
-            builder.show();
         });
+
         fetchArea();
     }
     private void tambahAreaKeApi(String namaArea) {

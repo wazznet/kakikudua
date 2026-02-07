@@ -15,6 +15,16 @@
         android:textColor="#FFFFFF"/>
 
     <Button
+        android:id="@+id/btnSn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#4CAF50"
+        android:text="Tambah atau Edit SN Modem"
+        android:textColor="#FFFFFF"
+        android:layout_marginTop="10dp"
+        />
+
+    <Button
         android:id="@+id/btnStop"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

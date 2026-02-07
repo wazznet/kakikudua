@@ -1,5 +1,6 @@
 package com.wazzgroup.penagihanwifi.settings;
 import android.annotation.SuppressLint;
+import android.graphics.Color;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -46,8 +47,10 @@ public class Adaptersub extends RecyclerView.Adapter<Adaptersub.ViewHolder> {
             RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) holder.textView.getLayoutParams();
             params.setMargins(0, marginTopInPx, 0, 0); // left, top, right, bottom
             holder.textView.setLayoutParams(params);
+        holder.textView.setTextColor(Color.BLACK);
 
-        }
+
+    }
 
     @Override
     public int getItemCount() {

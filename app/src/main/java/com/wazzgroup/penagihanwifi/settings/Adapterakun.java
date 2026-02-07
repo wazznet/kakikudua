@@ -1,6 +1,7 @@
 
 package com.wazzgroup.penagihanwifi.settings;
 import android.annotation.SuppressLint;
+import android.graphics.Color;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -71,6 +72,8 @@ public class Adapterakun extends RecyclerView.Adapter<Adapterakun.ViewHolder> {
                 listener.onItemClick(area);
             }
         });
+        holder.textView.setTextColor(Color.BLACK);
+
     }
 
     @Override
