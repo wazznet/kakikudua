@@ -187,10 +187,13 @@
             android:id="@+id/pembukuan"
             android:layout_width="match_parent"
             android:layout_height="70dp"
+            android:layout_marginStart="8dp"
             android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
             android:background="@drawable/dalamtopbutton"
-            app:layout_constraintTop_toBottomOf="@+id/pelanggan"
-            tools:layout_editor_absoluteX="0dp">
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/pelanggan">
 
             <ImageView
                 android:id="@+id/imageView8"
@@ -336,13 +339,13 @@
 
         <LinearLayout
             android:id="@+id/layout1"
-            android:layout_width="300dp"
+            android:layout_width="wrap_content"
             android:layout_height="85dp"
             android:layout_marginTop="8dp"
             android:orientation="horizontal"
             android:visibility="visible"
+
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.466"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView">
 
@@ -538,7 +541,7 @@
 
         <LinearLayout
             android:id="@+id/linearLayout2"
-            android:layout_width="300dp"
+            android:layout_width="wrap_content"
             android:layout_height="85dp"
             android:layout_marginTop="20dp"
             android:orientation="horizontal"
@@ -737,7 +740,7 @@
 
         <LinearLayout
             android:id="@+id/linearLayout3"
-            android:layout_width="300dp"
+            android:layout_width="wrap_content"
             android:layout_height="85dp"
             android:layout_marginTop="20dp"
             android:orientation="horizontal"
@@ -921,7 +924,8 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraintLayout22"
-            android:layout_width="305dp"
+
+            android:layout_width="wrap_content"
             android:layout_height="85dp"
             android:layout_marginTop="20dp"
             android:background="@drawable/dalamtopbutton"

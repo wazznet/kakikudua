@@ -3,6 +3,7 @@ package com.wazzgroup.penagihanwifi.pembayaran;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -20,6 +21,8 @@ import androidx.core.view.WindowInsetsCompat;
 import com.wazzgroup.penagihanwifi.GlobalHelper;
 import com.wazzgroup.penagihanwifi.R;
 import com.wazzgroup.penagihanwifi.TeknisiActivity;
+import com.wazzgroup.penagihanwifi.helper.TokenAuthenticator;
+import com.wazzgroup.penagihanwifi.helper.TokenInterceptor;
 import com.wazzgroup.penagihanwifi.pembayaran.lunas.TagihanLunasActivity;
 import com.wazzgroup.penagihanwifi.pembayaran.nunggak.TagihanNunggakActivity;
 import com.wazzgroup.penagihanwifi.pembayaran.tagihan.ManajemenPenagihan;
@@ -46,7 +49,7 @@ import okhttp3.Response;
 
 public class MenuPembayaranActivity extends AppCompatActivity {
     TextView pemasukan,telatpemasukan,tagihan,lunas,nunggakk,telatt;
-    String url = GlobalHelper.BASE_URL;
+    String url = GlobalHelper.BASE_URL_V2;
 
     private ListView listView;
     private EditText searchBox;
@@ -71,7 +74,8 @@ public class MenuPembayaranActivity extends AppCompatActivity {
         ImageView kembali = findViewById(R.id.backtolist);
         kembali.setOnClickListener(v -> kembaliKeList());
         listView = findViewById(R.id.listTagihan);
-
+        String iduserr = GlobalHelper.getIdUser(this);
+        Log.d("API_DEBUG", "iduser: " + iduserr);
         adapter = new TagihanAdapter(this, listData);
         listView.setAdapter(adapter);
         ceksaldo();
@@ -108,11 +112,18 @@ public class MenuPembayaranActivity extends AppCompatActivity {
     }
 
     private void ceksaldo() {
-        String url = GlobalHelper.BASE_URL;
-        OkHttpClient client = new OkHttpClient();
+
+        String url = GlobalHelper.BASE_URL_V2;
         String iduserr = GlobalHelper.getIdUser(this);
+
+        // PAKAI CLIENT YANG SUDAH ADA TOKEN & AUTO REFRESH
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new TokenInterceptor(this))
+                .authenticator(new TokenAuthenticator(this))
+                .build();
+
         RequestBody formBody = new FormBody.Builder()
-                .add("api", "banyaknotif") // Pastikan API PHP mendukung login dengan ID
+                .add("api", "banyaknotif")
                 .add("user", iduserr)
                 .build();
 
@@ -122,20 +133,38 @@ public class MenuPembayaranActivity extends AppCompatActivity {
                 .build();
 
         client.newCall(request).enqueue(new Callback() {
+
             @Override
             public void onFailure(Call call, IOException e) {
                 runOnUiThread(() ->
-                        Toast.makeText(MenuPembayaranActivity.this, "Gagal koneksi: " + e.getMessage(), Toast.LENGTH_SHORT).show()
+                        Toast.makeText(MenuPembayaranActivity.this,
+                                "Gagal koneksi: " + e.getMessage(),
+                                Toast.LENGTH_SHORT).show()
                 );
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                String json = response.body().string();
 
+                int code = response.code();
+                String bodyString = response.body() != null ? response.body().string() : "";
+
+                // 🔥 LOG DEBUG
+//                Log.d("API_DEBUG", "HTTP CODE: " + code);
+//                Log.d("API_DEBUG", "BODY: " + bodyString);
+
+                if (!response.isSuccessful()) {
+
+                    runOnUiThread(() ->
+                            Toast.makeText(MenuPembayaranActivity.this,
+                                    "Server error: " + code,
+                                    Toast.LENGTH_SHORT).show()
+                    );
+                    return;
+                }
                 runOnUiThread(() -> {
                     try {
-                        JSONObject obj = new JSONObject(json);
+                        JSONObject obj = new JSONObject(bodyString);
                         if (obj.getString("status").equals("success")) {
 
                             String pemasukann = obj.getString("pemasukan");
@@ -253,7 +282,10 @@ public class MenuPembayaranActivity extends AppCompatActivity {
 
     }
     private void cariTagihan() {
-        OkHttpClient client = new OkHttpClient();
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new TokenInterceptor(this))
+                .authenticator(new TokenAuthenticator(this))
+                .build();
         String iduserr = GlobalHelper.getIdUser(this);
 
         RequestBody formBody = new FormBody.Builder()

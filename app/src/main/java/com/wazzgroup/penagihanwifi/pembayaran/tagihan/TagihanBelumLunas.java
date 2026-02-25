@@ -13,4 +13,6 @@ public class TagihanBelumLunas {
     public String longitude;
 
     public String tanggalpenagihan;
+    public String nama_penagih;
+    public String update_at;
 }

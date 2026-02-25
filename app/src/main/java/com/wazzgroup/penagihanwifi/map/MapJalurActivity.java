@@ -58,6 +58,9 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.wazzgroup.penagihanwifi.helper.TokenAuthenticator;
+import com.wazzgroup.penagihanwifi.helper.TokenInterceptor;
+
 import androidx.core.app.ActivityCompat;
 
 public class MapJalurActivity extends AppCompatActivity {
@@ -68,7 +71,6 @@ public class MapJalurActivity extends AppCompatActivity {
     private TextView koordinatText;
     private JSONArray dataODP;
     private HashMap<String, GeoPoint> odpPoints = new HashMap<>();
-    private OkHttpClient client = new OkHttpClient();
     String iduserr;
     String url = GlobalHelper.BASE_URL;
     lapangan o;
@@ -131,6 +133,11 @@ public class MapJalurActivity extends AppCompatActivity {
     }
 
     private void tampilkanODP(String jalur) {
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new TokenInterceptor(this))
+                .authenticator(new TokenAuthenticator(this))
+                .build();
+
 
         Log.d("DATA_INPUT", "nama: " + jalur );
 

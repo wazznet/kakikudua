@@ -22,6 +22,8 @@ import com.wazzgroup.penagihanwifi.GlobalHelper;
 import com.wazzgroup.penagihanwifi.R;
 import com.wazzgroup.penagihanwifi.TeknisiActivity;
 import com.wazzgroup.penagihanwifi.acs.ScanSnActivity;
+import com.wazzgroup.penagihanwifi.helper.TokenAuthenticator;
+import com.wazzgroup.penagihanwifi.helper.TokenInterceptor;
 import com.wazzgroup.penagihanwifi.mikrotik.TambahMikrotik;
 
 import org.json.JSONArray;
@@ -44,7 +46,7 @@ public class ClientActivity extends AppCompatActivity {
     private boolean isLoading = false;
     private boolean isLastPage = false;
     private boolean isSearching = false;
-    String url = GlobalHelper.BASE_URL;
+    String url = GlobalHelper.BASE_URL_V2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -142,7 +144,10 @@ public class ClientActivity extends AppCompatActivity {
 
         btnStop.setOnClickListener(v -> {
             dialog.dismiss();
-            OkHttpClient client = new OkHttpClient();
+            OkHttpClient client = new OkHttpClient.Builder()
+                    .addInterceptor(new TokenInterceptor(this))
+                    .authenticator(new TokenAuthenticator(this))
+                    .build();
             String iduserr = GlobalHelper.getIdUser(this);
 
             RequestBody formBody = new FormBody.Builder()
@@ -194,7 +199,10 @@ public class ClientActivity extends AppCompatActivity {
         });
         btnStart.setOnClickListener(v -> {
             dialog.dismiss();
-            OkHttpClient client = new OkHttpClient();
+            OkHttpClient client = new OkHttpClient.Builder()
+                    .addInterceptor(new TokenInterceptor(this))
+                    .authenticator(new TokenAuthenticator(this))
+                    .build();
             String iduserr = GlobalHelper.getIdUser(this);
 
             RequestBody formBody = new FormBody.Builder()
@@ -256,7 +264,10 @@ public class ClientActivity extends AppCompatActivity {
                         // 👉 EKSEKUSI HAPUS DI SINI
                         dialog.dismiss();
 
-                        OkHttpClient client = new OkHttpClient();
+                        OkHttpClient client = new OkHttpClient.Builder()
+                                .addInterceptor(new TokenInterceptor(this))
+                                .authenticator(new TokenAuthenticator(this))
+                                .build();
                         String iduserr = GlobalHelper.getIdUser(this);
 
                         RequestBody formBody = new FormBody.Builder()
@@ -324,7 +335,10 @@ public class ClientActivity extends AppCompatActivity {
     private void ambilDataPelanggan(int start) {
         isLoading = true;
 
-        OkHttpClient client = new OkHttpClient();
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new TokenInterceptor(this))
+                .authenticator(new TokenAuthenticator(this))
+                .build();
         String iduserr = GlobalHelper.getIdUser(this);
 
         RequestBody formBody = new FormBody.Builder()
@@ -407,9 +421,12 @@ public class ClientActivity extends AppCompatActivity {
     private void cariPelanggan(String keyword) {
         isLoading = true;
 
-        OkHttpClient client = new OkHttpClient();
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new TokenInterceptor(this))
+                .authenticator(new TokenAuthenticator(this))
+                .build();
         String iduserr = GlobalHelper.getIdUser(this);
-        String url = GlobalHelper.BASE_URL;
+
 
         RequestBody formBody = new FormBody.Builder()
                 .add("api", "search_pelanggan")

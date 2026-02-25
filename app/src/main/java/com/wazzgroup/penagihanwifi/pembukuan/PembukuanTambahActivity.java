@@ -35,6 +35,8 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.GlideException;
 import com.wazzgroup.penagihanwifi.GlobalHelper;
 import com.wazzgroup.penagihanwifi.R;
+import com.wazzgroup.penagihanwifi.helper.TokenAuthenticator;
+import com.wazzgroup.penagihanwifi.helper.TokenInterceptor;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -56,7 +58,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class PembukuanTambahActivity extends AppCompatActivity {
-    String url = GlobalHelper.BASE_URL;
+    String url = GlobalHelper.BASE_URL_V2;
     private ListView listView;
     private ArrayList<PembukuanClass> listData = new ArrayList<>();
     private PembukuanAdapter adapter;
@@ -243,7 +245,11 @@ public class PembukuanTambahActivity extends AppCompatActivity {
 
             String iduserr = GlobalHelper.getIdUser(this);
 
-            OkHttpClient client = new OkHttpClient();
+            OkHttpClient client = new OkHttpClient.Builder()
+                    .addInterceptor(new TokenInterceptor(this))
+                    .authenticator(new TokenAuthenticator(this))
+                    .build();
+
             Request request;
 
             if (imageUri != null) {
@@ -414,7 +420,11 @@ public class PembukuanTambahActivity extends AppCompatActivity {
         return Uri.parse(path);
     }
     private void ambilData() {
-        OkHttpClient client = new OkHttpClient();
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new TokenInterceptor(this))
+                .authenticator(new TokenAuthenticator(this))
+                .build();
+
         String iduserr = GlobalHelper.getIdUser(this);
 
         RequestBody formBody = new FormBody.Builder()

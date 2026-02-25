@@ -26,6 +26,8 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
+
+import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
@@ -36,6 +38,9 @@ import com.google.android.gms.location.LocationServices;
 import com.google.gson.Gson;
 import com.wazzgroup.penagihanwifi.GlobalHelper;
 import com.wazzgroup.penagihanwifi.R;
+import com.wazzgroup.penagihanwifi.helper.TokenAuthenticator;
+import com.wazzgroup.penagihanwifi.helper.TokenInterceptor;
+
 import org.json.JSONObject;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
@@ -60,7 +65,6 @@ public class EditPelangganActivity extends AppCompatActivity {
     private Pelanggan pelangganLama;
     private List<String> listIdPaket = new ArrayList<>();
     private List<String> listIdArea = new ArrayList<>();
-    private final OkHttpClient client = new OkHttpClient();
     // Untuk lokasi pelanggan
     private JSONArray dataODP;
     // Untuk ODP
@@ -82,6 +86,7 @@ public class EditPelangganActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_pelanggan);
 
+        EdgeToEdge.enable(this);
         // Ambil data pelanggan dari intent
         String json = getIntent().getStringExtra("data_pelanggan");
         pelangganLama = new Gson().fromJson(json, Pelanggan.class);
@@ -166,6 +171,10 @@ public class EditPelangganActivity extends AppCompatActivity {
 
     private void loadSpinnerPaket() {
         String iduserr = GlobalHelper.getIdUser(this);
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new TokenInterceptor(this))
+                .authenticator(new TokenAuthenticator(this))
+                .build();
 
         RequestBody formBody = new FormBody.Builder()
                 .add("api", "paket")
@@ -230,6 +239,10 @@ public class EditPelangganActivity extends AppCompatActivity {
 
     private void loadSpinnerArea() {
         String iduserr = GlobalHelper.getIdUser(this);
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new TokenInterceptor(this))
+                .authenticator(new TokenAuthenticator(this))
+                .build();
 
         RequestBody formBody = new FormBody.Builder()
                 .add("api", "area")
@@ -376,6 +389,10 @@ public class EditPelangganActivity extends AppCompatActivity {
             Toast.makeText(this, "Lengkapi semua data!", Toast.LENGTH_SHORT).show();
             return;
         }
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new TokenInterceptor(this))
+                .authenticator(new TokenAuthenticator(this))
+                .build();
 
         RequestBody formBody = new FormBody.Builder()
                 .add("api", "updatepelanggan")
@@ -453,8 +470,11 @@ public class EditPelangganActivity extends AppCompatActivity {
         });
     }
     private void ambilDataODPEdit(double latUser, double lonUser) {
-        OkHttpClient client = new OkHttpClient();
-         String iduserr = GlobalHelper.getIdUser(this);
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new TokenInterceptor(this))
+                .authenticator(new TokenAuthenticator(this))
+                .build();
+        String iduserr = GlobalHelper.getIdUser(this);
 
         RequestBody formBody = new FormBody.Builder()
                 .add("api", "odp")

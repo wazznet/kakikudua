@@ -52,6 +52,8 @@ import com.google.android.gms.location.LocationServices;
 import com.wazzgroup.penagihanwifi.GlobalHelper;
 import com.wazzgroup.penagihanwifi.R;
 import com.wazzgroup.penagihanwifi.TeknisiActivity;
+import com.wazzgroup.penagihanwifi.helper.TokenAuthenticator;
+import com.wazzgroup.penagihanwifi.helper.TokenInterceptor;
 import com.wazzgroup.penagihanwifi.lottie.LottieSuccessActivity;
 import com.wazzgroup.penagihanwifi.pembukuan.PembukuanTambahActivity;
 
@@ -65,7 +67,6 @@ public class PsbActivity extends AppCompatActivity {
     private String rfidId = "";
     private List<String> listId = new ArrayList<>();
     private List<String> listId2 = new ArrayList<>();
-    private final OkHttpClient client = new OkHttpClient();
     private TextView txtKoordinat,textOdpDipilih,textOdpidDipilih;
     private FusedLocationProviderClient fusedLocationClient;
     private GeoPoint lokasiTerpilih = null;
@@ -75,7 +76,7 @@ public class PsbActivity extends AppCompatActivity {
     private JSONArray dataODP;
     private LocationManager locationManager;
     String iduserr;
-    String url = GlobalHelper.BASE_URL;
+    String url = GlobalHelper.BASE_URL_V2;
     private String selectedPaketId = ""; // Untuk menyimpan ID paket yang dipilih
     private String paketTerpilihId = ""; // <- tambahkan ini
 
@@ -265,8 +266,10 @@ public class PsbActivity extends AppCompatActivity {
     }
 
     private void loadSpinnerData(Spinner spinner) {
-        OkHttpClient client = new OkHttpClient();
-
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new TokenInterceptor(this))
+                .authenticator(new TokenAuthenticator(this))
+                .build();
         // URL server langsung di dalam fungsi
          RequestBody formBody = new FormBody.Builder()
                 .add("api", "area")
@@ -345,8 +348,10 @@ public class PsbActivity extends AppCompatActivity {
         });
     }
     private void loadSpinnerPaket(Spinner spinner) {
-        OkHttpClient client = new OkHttpClient();
-
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new TokenInterceptor(this))
+                .authenticator(new TokenAuthenticator(this))
+                .build();
         RequestBody formBody = new FormBody.Builder()
                 .add("api", "paket")
                 .add("user", iduserr)
@@ -438,168 +443,6 @@ public class PsbActivity extends AppCompatActivity {
             }
         });
     }
-
-    //    private void loadSpinnerPaket(Spinner spinner) {
-//        OkHttpClient client = new OkHttpClient();
-//
-//        // URL server langsung di dalam fungsi
-//         RequestBody formBody = new FormBody.Builder()
-//                .add("api", "paket")
-//                .add("user", iduserr)
-//                .build();
-//
-//
-//        Request request = new Request.Builder()
-//                .url(url)
-//                .post(formBody)
-//                .build();
-//
-//        client.newCall(request).enqueue(new Callback() {
-//            @Override
-//            public void onFailure(Call call, IOException e) {
-//                runOnUiThread(() ->
-//                        Toast.makeText(PsbActivity.this, "Gagal koneksi: " + e.getMessage(), Toast.LENGTH_SHORT).show()
-//                );
-//            }
-//
-//            @Override
-//            public void onResponse(Call call, Response response) throws IOException {
-//                if (response.isSuccessful()) {
-//                    String json = response.body().string();
-//                    List<String> listNama = new ArrayList<>();
-//                    listId.clear();
-//
-//                    try {
-//                        JSONObject obj = new JSONObject(json);
-//                        JSONArray data = obj.getJSONArray("data");
-//
-//                        for (int i = 0; i < data.length(); i++) {
-//                            JSONObject item = data.getJSONObject(i);
-//                            listNama.add(item.getString("paket"));
-//                            listId.add(item.getString("id"));
-//                        }
-//
-//                        runOnUiThread(() -> {
-//                            ArrayAdapter<String> adapter = new ArrayAdapter<String>(PsbActivity.this,
-//                                    android.R.layout.simple_spinner_item, listNama) {
-//
-//                                @Override
-//                                public View getView(int position, View convertView, ViewGroup parent) {
-//                                    View view = super.getView(position, convertView, parent);
-//                                    TextView tv = (TextView) view.findViewById(android.R.id.text1);
-//                                    tv.setTextColor(android.graphics.Color.BLACK); // Set warna hitam
-//                                    return view;
-//                                }
-//
-//                                @Override
-//                                public View getDropDownView(int position, View convertView, ViewGroup parent) {
-//                                    View view = super.getDropDownView(position, convertView, parent);
-//                                    TextView tv = (TextView) view.findViewById(android.R.id.text1);
-//                                    tv.setTextColor(android.graphics.Color.BLACK); // Set warna hitam juga di dropdown
-//                                    return view;
-//                                }
-//                            };
-//
-//                            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//                            spinner.setAdapter(adapter);
-//                        });
-//
-//
-//                    } catch (JSONException e) {
-//                        e.printStackTrace();
-//                        runOnUiThread(() ->
-//                                Toast.makeText(PsbActivity.this, "Format JSON salah", Toast.LENGTH_SHORT).show()
-//                        );
-//                    }
-//                } else {
-//                    runOnUiThread(() ->
-//                            Toast.makeText(PsbActivity.this, "Respon server error", Toast.LENGTH_SHORT).show()
-//                    );
-//                }
-//            }
-//        });
-//    }
-//    private void loadSpinnerodp(Spinner spinner) {
-//        OkHttpClient client = new OkHttpClient();
-//
-//        String url = "https://wifiapi.wazzgroup.com/tambah.php";
-//        RequestBody formBody = new FormBody.Builder()
-//                .add("api", "odp")
-//                .add("user", iduserr)
-//                .build();
-//
-//        Request request = new Request.Builder()
-//                .url(url)
-//                .post(formBody)
-//                .build();
-//
-//        client.newCall(request).enqueue(new Callback() {
-//            @Override
-//            public void onFailure(Call call, IOException e) {
-//                runOnUiThread(() ->
-//                        Toast.makeText(PsbActivity.this, "Gagal koneksi: " + e.getMessage(), Toast.LENGTH_SHORT).show()
-//                );
-//            }
-//
-//            @Override
-//            public void onResponse(Call call, Response response) throws IOException {
-//                if (response.isSuccessful()) {
-//                    String json = response.body().string();
-//                    List<String> listNama = new ArrayList<>();
-//                    listId.clear();
-//
-//                    try {
-//                        JSONArray data = new JSONArray(json); // LANGSUNG JSONArray
-//
-//                        for (int i = 0; i < data.length(); i++) {
-//                            JSONObject item = data.getJSONObject(i);
-//                            String nama = item.getString("nama");
-//                            String id = item.getString("id");
-//
-//                            listNama.add(nama + " - " + id);
-//                            listId.add(id);
-//                        }
-//
-//                        runOnUiThread(() -> {
-//                            ArrayAdapter<String> adapter = new ArrayAdapter<String>(PsbActivity.this,
-//                                    android.R.layout.simple_spinner_item, listNama) {
-//
-//                                @Override
-//                                public View getView(int position, View convertView, ViewGroup parent) {
-//                                    View view = super.getView(position, convertView, parent);
-//                                    TextView tv = (TextView) view.findViewById(android.R.id.text1);
-//                                    tv.setTextColor(android.graphics.Color.BLACK); // Set warna hitam
-//                                    return view;
-//                                }
-//
-//                                @Override
-//                                public View getDropDownView(int position, View convertView, ViewGroup parent) {
-//                                    View view = super.getDropDownView(position, convertView, parent);
-//                                    TextView tv = (TextView) view.findViewById(android.R.id.text1);
-//                                    tv.setTextColor(android.graphics.Color.BLACK); // Set warna hitam juga di dropdown
-//                                    return view;
-//                                }
-//                            };
-//
-//                            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//                            spinner.setAdapter(adapter);
-//                        });
-//
-//
-//                    } catch (JSONException e) {
-//                        e.printStackTrace();
-//                        runOnUiThread(() ->
-//                                Toast.makeText(PsbActivity.this, "Format JSON salah: " + e.getMessage(), Toast.LENGTH_SHORT).show()
-//                        );
-//                    }
-//                } else {
-//                    runOnUiThread(() ->
-//                            Toast.makeText(PsbActivity.this, "Respon server error", Toast.LENGTH_SHORT).show()
-//                    );
-//                }
-//            }
-//        });
-//    }
     private void bukaDialogPilihLokasiODP() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
@@ -624,8 +467,10 @@ public class PsbActivity extends AppCompatActivity {
     }
 
     private void ambilDataODPdanTampilkanMap(double latUser, double lonUser) {
-        OkHttpClient client = new OkHttpClient();
-
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new TokenInterceptor(this))
+                .authenticator(new TokenAuthenticator(this))
+                .build();
         RequestBody formBody = new FormBody.Builder()
                 .add("api", "odp")
                 .add("user", iduserr)
@@ -763,6 +608,7 @@ public class PsbActivity extends AppCompatActivity {
 
 
     private void kirimData() {
+
         String nama = editNama.getText().toString().trim();
         String no = editno.getText().toString().trim();
         String hp = editHp.getText().toString().trim();
@@ -801,7 +647,10 @@ public class PsbActivity extends AppCompatActivity {
         String longitude = String.valueOf(lokasiTerpilih.getLongitude());
 
         Log.d("DATA_INPUT", "nama: " + nama + ", hp: " + hp + ", tanggal: " + tanggalDipilih + ", lat: " + latitude + ", lon: " + longitude + ", ODP: " + idOdpDipilih);
-
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new TokenInterceptor(this))
+                .authenticator(new TokenAuthenticator(this))
+                .build();
         RequestBody formBody = new FormBody.Builder()
                 .add("api", "tambahpelanggan")
                 .add("user", iduserr)

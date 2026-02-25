@@ -15,6 +15,11 @@ public class GlobalHelper {
         return prefs.getString("idlogin", "");
 
     }
+    public static String getIdsub(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+        return prefs.getString("sub_akun", "");
+
+    }
     public static String getno(Context context) {
         SharedPreferences prefs = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         return prefs.getString("nohp", "");
@@ -45,6 +50,7 @@ public class GlobalHelper {
     public static final String BASE_URL = "https://fufufafa.wazzapp.my.id/tambah.php";
     public static final String BASE_URLtv = "https://fufufafa.wazzapp.my.id/playlist.php";
     public static final String BASE_URL_wa = "https://whatsapp-gateway.wazzgroup.com";
+    public static final String BASE_URL_V2 = "https://fufufafa.wazzapp.my.id/orangsolo/komdigi.php";
 
 
 }

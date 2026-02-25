@@ -2,21 +2,27 @@ package com.wazzgroup.penagihanwifi.halamanpelanggan;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.wazzgroup.penagihanwifi.GlobalHelper;
 import com.wazzgroup.penagihanwifi.R;
+import com.wazzgroup.penagihanwifi.halamanpelanggan.jadwal_sholat.JadwalSholatActivity;
 import com.wazzgroup.penagihanwifi.halamanpelanggan.komplen.PelangganKomplenActivity;
 import com.wazzgroup.penagihanwifi.halamanpelanggan.layanan.PelangganLayananActivity;
 import com.wazzgroup.penagihanwifi.halamanpelanggan.mywifi.PelangganHostspotActivity;
 import com.wazzgroup.penagihanwifi.halamanpelanggan.paket.PelangganPaketActivity;
+import com.wazzgroup.penagihanwifi.halamanpelanggan.quran.ListSuratActivity;
 import com.wazzgroup.penagihanwifi.halamanpelanggan.shop.PelangganPembelianActivity;
 import com.wazzgroup.penagihanwifi.halamanpelanggan.shop.PelangganRiwayatActivity;
 import com.wazzgroup.penagihanwifi.halamanpelanggan.tagihan.PelangganTagihanActivity;
@@ -28,6 +34,8 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -38,17 +46,22 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class PelangganActivity extends AppCompatActivity {
-    private Handler handler = new Handler();
+    //private Handler handler = new Handler();
     private TextView  textMeta,textTiktok,textYoutube,textCloudflare,namapelanggannya,saldo;
     private Runnable pingRunnable;
     String url = GlobalHelper.BASE_URL; // Pastikan ini endpoint yang sesuai
     private OkHttpClient client = new OkHttpClient();
+    ViewPager2 viewPager;
+    LinearLayout dotsLayout;
+    Handler handler = new Handler(Looper.getMainLooper());
+    Runnable slider;
+    List<BannerModel> banners;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_pelanggan2);
+        setContentView(R.layout.activity_pelanggan3);
         SharedPreferences prefs = getSharedPreferences("MyPrefs", MODE_PRIVATE);
 
         String nama_pelanggan = prefs.getString("nama_pelanggan", "");
@@ -60,7 +73,7 @@ public class PelangganActivity extends AppCompatActivity {
         textYoutube = findViewById(R.id.textYoutube);
         textCloudflare = findViewById(R.id.textCloudflare);
         namapelanggannya = findViewById(R.id.namapelanggannya);
-        //saldo = findViewById(R.id.textView11);
+        saldo = findViewById(R.id.txtSaldo);
         namapelanggannya.setText(nama_pelanggan);
 //        ImageView fotoLogout = findViewById(R.id.profile);
 //        // Jika foto di klik, langsung pindah ke LogoutActivity
@@ -68,9 +81,41 @@ public class PelangganActivity extends AppCompatActivity {
 //            Intent intent = new Intent(PelangganActivity.this, LogoutActivity.class);
 //            startActivity(intent);
 //        });
-//        ceksaldo(id);
+        ceksaldo(id);
         startRealtimePing();
+        viewPager = findViewById(R.id.bannerViewPager);
+        dotsLayout = findViewById(R.id.layoutDots);
 
+        banners = Arrays.asList(
+                new BannerModel(R.drawable.bca, PelangganActivity2.class),
+                new BannerModel(R.drawable.qris, PelangganActivity2.class),
+                new BannerModel(R.drawable.bni, PelangganActivity2.class)
+        );
+
+        BannerAdapter adapter = new BannerAdapter(this, banners);
+        viewPager.setAdapter(adapter);
+        viewPager.setCurrentItem(1000, false);
+
+        setupDots();
+        updateDots(0);
+
+        viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                updateDots(position % banners.size());
+            }
+        });
+
+        viewPager.setPageTransformer((page, pos) -> {
+            float scale = 0.85f + (1 - Math.abs(pos)) * 0.15f;
+            page.setScaleY(scale);
+            page.setAlpha(0.5f + (1 - Math.abs(pos)) * 0.5f);
+        });
+
+        slider = () -> {
+            viewPager.setCurrentItem(viewPager.getCurrentItem() + 1, true);
+            handler.postDelayed(slider, 3000);
+        };
     }
     private void ceksaldo(String id) {
         RequestBody formBody = new FormBody.Builder()
@@ -133,6 +178,10 @@ public class PelangganActivity extends AppCompatActivity {
             startActivity(new Intent(this, PelangganLayananActivity.class));
         }else if (id == R.id.komplain) {
             startActivity(new Intent(this, PelangganKomplenActivity.class));
+        }else if (id == R.id.jadwal) {
+            startActivity(new Intent(this, JadwalSholatActivity.class));
+        }else if (id == R.id.quran) {
+            startActivity(new Intent(this, ListSuratActivity.class));
         }
     }
     private void startRealtimePing() {
@@ -179,9 +228,39 @@ public class PelangganActivity extends AppCompatActivity {
             }
         }).start();
     }
+    private void setupDots() {
+        dotsLayout.removeAllViews();
+        for (int i = 0; i < banners.size(); i++) {
+            TextView dot = new TextView(this);
+            dot.setText("●");
+            dot.setTextSize(14);
+            dot.setTextColor(Color.parseColor("#80FFFFFF"));
+            dot.setPadding(8,0,8,0);
+            dotsLayout.addView(dot);
+        }
+    }
+
+    private void updateDots(int index) {
+        for (int i = 0; i < dotsLayout.getChildCount(); i++) {
+            TextView dot = (TextView) dotsLayout.getChildAt(i);
+            dot.setTextColor(i == index ? Color.WHITE : Color.parseColor("#80FFFFFF"));
+        }
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
         stopRealtimePing();
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        handler.postDelayed(slider, 3000);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        handler.removeCallbacks(slider);
     }
 }

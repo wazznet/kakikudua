@@ -37,6 +37,8 @@ import com.google.android.gms.location.LocationServices;
 import com.google.gson.Gson;
 import com.wazzgroup.penagihanwifi.GlobalHelper;
 import com.wazzgroup.penagihanwifi.R;
+import com.wazzgroup.penagihanwifi.helper.TokenAuthenticator;
+import com.wazzgroup.penagihanwifi.helper.TokenInterceptor;
 import com.wazzgroup.penagihanwifi.lottie.LottieSuccessActivity;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -62,7 +64,6 @@ import okhttp3.Response;
 
 public class EditOdpActivity extends AppCompatActivity {
     private lapangan datalama;
-    private final OkHttpClient client = new OkHttpClient();
     private TextView txtKoordinat,textOdpDipilih,textOdpidDipilih,namaodp;
     private FusedLocationProviderClient fusedLocationClient;
     private GeoPoint lokasiTerpilih = null;
@@ -71,7 +72,7 @@ public class EditOdpActivity extends AppCompatActivity {
     private String namaOdpDipilih = "";
     private JSONArray dataODP;
     String iduserr;
-    String url = GlobalHelper.BASE_URL;
+    String url = GlobalHelper.BASE_URL_V2;
     Spinner spinnerType, spinnerPort;
     EditText notetxt;
     @Override
@@ -311,7 +312,10 @@ public class EditOdpActivity extends AppCompatActivity {
     }
 
     private void ambilDataODPdanTampilkanMap(double latUser, double lonUser) {
-        OkHttpClient client = new OkHttpClient();
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new TokenInterceptor(this))
+                .authenticator(new TokenAuthenticator(this))
+                .build();
 
         RequestBody formBody = new FormBody.Builder()
                 .add("api", "odp")
@@ -478,6 +482,10 @@ public class EditOdpActivity extends AppCompatActivity {
         String longitude = longitudeBaru.isEmpty() ? datalama.longitude : longitudeBaru;
 
         String idODP = idOdpDipilih.isEmpty() ? datalama.terhubung_ke : idOdpDipilih;
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new TokenInterceptor(this))
+                .authenticator(new TokenAuthenticator(this))
+                .build();
 
         Log.d("DATA_INPUT", "id jalur: " + idjalur +
                 ", type: " + type +

@@ -21,6 +21,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.wazzgroup.penagihanwifi.GlobalHelper;
 import com.wazzgroup.penagihanwifi.R;
+import com.wazzgroup.penagihanwifi.helper.TokenAuthenticator;
+import com.wazzgroup.penagihanwifi.helper.TokenInterceptor;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -44,7 +46,7 @@ public class SettingSubActivity extends AppCompatActivity {
     private Adapterakun Adapterakun;
     private List<Class2> areaList = new ArrayList<>();
     private List<ClassAkun> akunList = new ArrayList<>();
-    private String url = GlobalHelper.BASE_URL;
+    private String url = GlobalHelper.BASE_URL_V2;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,7 +99,10 @@ public class SettingSubActivity extends AppCompatActivity {
             new Thread(() -> {
                 try {
                     String iduserr = GlobalHelper.getIdUser(this);
-                    OkHttpClient client = new OkHttpClient();
+                    OkHttpClient client = new OkHttpClient.Builder()
+                            .addInterceptor(new TokenInterceptor(this))
+                            .authenticator(new TokenAuthenticator(this))
+                            .build();
                     RequestBody formBody = new FormBody.Builder()
                             .add("api", "area")
                             .add("user", iduserr) // <-- id_user aktif
@@ -247,6 +252,7 @@ public class SettingSubActivity extends AppCompatActivity {
         RadioButton radioTeknisi = dialogView.findViewById(R.id.radioTeknisi);
         RadioButton radioMarketing = dialogView.findViewById(R.id.radioMarketing);
         RadioButton radioReseller = dialogView.findViewById(R.id.radioReseller);
+        RadioButton radiokangtagih = dialogView.findViewById(R.id.radiokangtagih);
 
         RadioGroup radioArea = dialogView.findViewById(R.id.radioArea);
         inputNama.setText(area.getnama());
@@ -261,13 +267,19 @@ public class SettingSubActivity extends AppCompatActivity {
         if(Objects.equals(area.getakses(), "reseller")){
             radioRole.check(radioReseller.getId());
         }
+        if(Objects.equals(area.getakses(), "kangtagih")){
+            radioRole.check(radiokangtagih.getId());
+        }
         //inputPassword.setVisibility(View.GONE);
         // 🔹 Ambil daftar area dari API
         // 🔹 Ambil daftar area dari API
         new Thread(() -> {
             try {
                 String iduserr = GlobalHelper.getIdUser(this);
-                OkHttpClient client = new OkHttpClient();
+                OkHttpClient client = new OkHttpClient.Builder()
+                        .addInterceptor(new TokenInterceptor(this))
+                        .authenticator(new TokenAuthenticator(this))
+                        .build();
                 RequestBody formBody = new FormBody.Builder()
                         .add("api", "area")
                         .add("user", iduserr) // <-- id_user aktif
@@ -412,7 +424,10 @@ public class SettingSubActivity extends AppCompatActivity {
     }
     private void tambahUserKeApi(String post, int idtarget, String nama, String username, String password,
                                  String role, String idArea, String nohpnya, ApiCallback callback) {
-        OkHttpClient client = new OkHttpClient();
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new TokenInterceptor(this))
+                .authenticator(new TokenAuthenticator(this))
+                .build();
         String iduserr = GlobalHelper.getIdUser(this);
 
         RequestBody formBody = new FormBody.Builder()
@@ -463,7 +478,10 @@ public class SettingSubActivity extends AppCompatActivity {
         void onError(String errorMsg);
     }
     private void akun() {
-    OkHttpClient client = new OkHttpClient();
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new TokenInterceptor(this))
+                .authenticator(new TokenAuthenticator(this))
+                .build();
 
 
     String iduserr = GlobalHelper.getIdUser(this);
@@ -517,7 +535,10 @@ public class SettingSubActivity extends AppCompatActivity {
     });
 }
     private void fetchLog() {
-        OkHttpClient client = new OkHttpClient();
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new TokenInterceptor(this))
+                .authenticator(new TokenAuthenticator(this))
+                .build();
 
 
         String iduserr = GlobalHelper.getIdUser(this);

@@ -155,23 +155,23 @@
                 android:layout_width="150dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
                 android:text="Rp.0"
                 android:textColor="#1048F2"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/namawifi" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/pengeluaran2"
                 android:layout_width="150dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
                 android:text="Rp.0"
                 android:textAlignment="viewEnd"
                 android:textColor="#FF0404"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/namawifi" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/profit"
@@ -223,14 +223,16 @@
                         android:id="@+id/textView27"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="pemasukan" />
+                        android:text="pemasukan"
+                        android:textColor="#000000" />
 
                     <TextView
                         android:id="@+id/textView28"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
-                        android:text="pembayaran cash" />
+                        android:text="pembayaran cash"
+                        android:textColor="#000000" />
 
                     <TextView
                         android:id="@+id/cash"
@@ -244,7 +246,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
-                        android:text="pembayaran oline" />
+                        android:text="pembayaran oline"
+                        android:textColor="#000000" />
 
                     <TextView
                         android:id="@+id/online"
@@ -258,7 +261,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
-                        android:text="pemasukan lain" />
+                        android:text="pemasukan lain"
+                        android:textColor="#000000" />
 
                     <TextView
                         android:id="@+id/plain"
@@ -277,14 +281,16 @@
                         android:id="@+id/textView32"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="pengeluaran" />
+                        android:text="pengeluaran"
+                        android:textColor="#000000" />
 
                     <TextView
                         android:id="@+id/textView33"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
-                        android:text="setoran BW" />
+                        android:text="setoran BW"
+                        android:textColor="#000000" />
 
                     <TextView
                         android:id="@+id/bw"
@@ -298,7 +304,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
-                        android:text="gaji kariawan" />
+                        android:text="gaji kariawan"
+                        android:textColor="#000000" />
 
                     <TextView
                         android:id="@+id/gaji"
@@ -312,7 +319,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
-                        android:text="pengeluaran lain" />
+                        android:text="pengeluaran lain"
+                        android:textColor="#000000" />
 
                     <TextView
                         android:id="@+id/plain2"

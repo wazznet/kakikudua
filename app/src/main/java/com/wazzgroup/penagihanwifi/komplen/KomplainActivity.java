@@ -21,6 +21,8 @@ import androidx.core.content.FileProvider;
 import com.wazzgroup.penagihanwifi.GlobalHelper;
 import com.wazzgroup.penagihanwifi.R;
 import com.wazzgroup.penagihanwifi.TeknisiActivity;
+import com.wazzgroup.penagihanwifi.helper.TokenAuthenticator;
+import com.wazzgroup.penagihanwifi.helper.TokenInterceptor;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -35,13 +37,12 @@ import java.util.ArrayList;
 import okhttp3.*;
 
 public class KomplainActivity extends AppCompatActivity {
-    String url = GlobalHelper.BASE_URL;
+    String url = GlobalHelper.BASE_URL_V2;
 
     private ActivityResultLauncher<Uri> takePictureLauncher;
     private Uri photoUri;
     private KolmplenPelanggan selectedKomplen; // simpan komplain yang sedang diproses
 
-    private OkHttpClient client = new OkHttpClient();
     private ListView listView;
     private ArrayList<KolmplenPelanggan> listData = new ArrayList<>();
     private KomplenAdapter adapter;
@@ -191,6 +192,11 @@ public class KomplainActivity extends AppCompatActivity {
                 byteBuffer.write(buffer, 0, len);
             }
             byte[] imageBytes = byteBuffer.toByteArray();
+            OkHttpClient client = new OkHttpClient.Builder()
+                    .addInterceptor(new TokenInterceptor(this))
+                    .authenticator(new TokenAuthenticator(this))
+                    .build();
+
 
             RequestBody requestBody = new MultipartBody.Builder()
                     .setType(MultipartBody.FORM)
@@ -231,7 +237,11 @@ public class KomplainActivity extends AppCompatActivity {
     }
 
     private void ambilDataKomplen() {
-        OkHttpClient client = new OkHttpClient();
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new TokenInterceptor(this))
+                .authenticator(new TokenAuthenticator(this))
+                .build();
+
         String iduserr = GlobalHelper.getIdUser(this);
         String akses = GlobalHelper.getakses(this);
 

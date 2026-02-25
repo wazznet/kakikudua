@@ -21,6 +21,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.wazzgroup.penagihanwifi.GlobalHelper;
 import com.wazzgroup.penagihanwifi.R;
 import com.wazzgroup.penagihanwifi.TeknisiActivity;
+import com.wazzgroup.penagihanwifi.helper.TokenAuthenticator;
+import com.wazzgroup.penagihanwifi.helper.TokenInterceptor;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -54,7 +56,6 @@ public class OdpActivity extends AppCompatActivity {
     private TextView koordinatText;
     private JSONArray dataODP;
     private HashMap<String, GeoPoint> odpPoints = new HashMap<>();
-    private OkHttpClient client = new OkHttpClient();
     private boolean modeTambahODP = false;
     private Marker previewMarker = null;
     String iduserr;
@@ -123,6 +124,11 @@ public class OdpActivity extends AppCompatActivity {
         finish();
     }
     private void loadSpinnerjalur(Spinner spinner) {
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new TokenInterceptor(this))
+                .authenticator(new TokenAuthenticator(this))
+                .build();
+
 
         RequestBody formBody = new FormBody.Builder()
                 .add("api", "jalur")
@@ -193,6 +199,11 @@ public class OdpActivity extends AppCompatActivity {
     }
 
     private void tampilkanODP() {
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new TokenInterceptor(this))
+                .authenticator(new TokenAuthenticator(this))
+                .build();
+
 
         int posisi = sjalur.getSelectedItemPosition();
         String jalur = listId.get(posisi);
@@ -369,6 +380,11 @@ public class OdpActivity extends AppCompatActivity {
     }
 
     private void kirimODPBaru(double lat, double lon, String id_jalur, String nama, String terhubungKe, String type, String port) {
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new TokenInterceptor(this))
+                .authenticator(new TokenAuthenticator(this))
+                .build();
+
         RequestBody formBody = new FormBody.Builder()
                 .add("api", "tambah_odp")
                 .add("user", iduserr)
@@ -440,6 +456,11 @@ public class OdpActivity extends AppCompatActivity {
         builder.show();
     }
     private void kirimJalurBaru(String namaJalur) {
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new TokenInterceptor(this))
+                .authenticator(new TokenAuthenticator(this))
+                .build();
+
 
         RequestBody formBody = new FormBody.Builder()
                 .add("api", "tambah_jalur")

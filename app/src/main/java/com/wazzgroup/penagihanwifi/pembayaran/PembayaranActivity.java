@@ -14,6 +14,7 @@ import android.content.Intent;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.*;
 
 import android.view.View;
@@ -21,7 +22,10 @@ import android.view.View;
 import com.dantsu.escposprinter.EscPosPrinter;
 import com.dantsu.escposprinter.connection.bluetooth.BluetoothConnection;
 import com.wazzgroup.penagihanwifi.GlobalHelper;
+import com.wazzgroup.penagihanwifi.KangtagihActivity;
 import com.wazzgroup.penagihanwifi.R;
+import com.wazzgroup.penagihanwifi.helper.TokenAuthenticator;
+import com.wazzgroup.penagihanwifi.helper.TokenInterceptor;
 import com.wazzgroup.penagihanwifi.lottie.LottieSuccessActivity;
 import com.wazzgroup.penagihanwifi.pembayaran.lunas.TagihanLunasActivity;
 import com.wazzgroup.penagihanwifi.pembayaran.nunggak.TagihanNunggakActivity;
@@ -46,7 +50,7 @@ public class PembayaranActivity extends AppCompatActivity {
     private TextView textNama, cekrfid, textNo, textAlamat, textBulan, textJumlahtagihan, textpaket;
     LinearLayout checkboxContainer;
     private String rfidId = "";
-    private OkHttpClient client = new OkHttpClient();
+   // private OkHttpClient client = new OkHttpClient();
     private ConstraintLayout btnKirim;
     private boolean dariList = false;
     String iduserr;
@@ -54,7 +58,7 @@ public class PembayaranActivity extends AppCompatActivity {
     String namawifi;
     String nomerhpku;
     String namaku;
-    String url = GlobalHelper.BASE_URL;
+    String url = GlobalHelper.BASE_URL_V2;
     String notanama,notaperiode,notaalamat,notapaket,notatotal;
 
     @Override
@@ -140,6 +144,10 @@ public class PembayaranActivity extends AppCompatActivity {
     }
 
     private void getTagihanByRfid(String rfid) {
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new TokenInterceptor(this))
+                .authenticator(new TokenAuthenticator(this))
+                .build();
         RequestBody formBody = new FormBody.Builder()
                 .add("api", "pebayaran")
                 .add("rfid", rfid)
@@ -180,8 +188,14 @@ public class PembayaranActivity extends AppCompatActivity {
     }
 
     private void getTagihanByIdPelanggan(String idPelanggan) {
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new TokenInterceptor(this))
+                .authenticator(new TokenAuthenticator(this))
+                .build();
         RequestBody formBody = new FormBody.Builder()
-                .add("api", "get_tagihan_by_id_pelanggan")
+
+                .add("api", "pebayaran")
+                .add("post", "get_tagihan_by_id_pelanggan")
                 .add("id_pelanggan", idPelanggan)
                 .build();
 
@@ -198,10 +212,13 @@ public class PembayaranActivity extends AppCompatActivity {
 
             @Override public void onResponse(Call call, Response response) throws IOException {
                 String result = response.body().string();
+
+                Log.d("API_DEBUG", "BODY: " + result);
                 runOnUiThread(() -> {
                     showLoading(false);
                     try {
                         JSONObject obj = new JSONObject(result);
+
                         if (obj.getString("status").equals("success")) {
                             rfidId = obj.getString("rfid"); // Ambil rfid untuk submit nanti
                             isiDataTagihan(obj);
@@ -277,14 +294,19 @@ public class PembayaranActivity extends AppCompatActivity {
             Toast.makeText(this, "Pilih minimal 1 tagihan", Toast.LENGTH_SHORT).show();
             return;
         }
-
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new TokenInterceptor(this))
+                .authenticator(new TokenAuthenticator(this))
+                .build();
         String idTagihanString = TextUtils.join(",", idTerpilih);
+        String getIdlogin = GlobalHelper.getIdlogin(this);
+        Log.d("iduser", "iduser: " + getIdlogin);
 
         RequestBody formBody = new FormBody.Builder()
                 .add("api", "pebayaran")
                 .add("post", "submit")
                 .add("user", iduserr)
-                .add("idpenagihan", idpenagihan)
+                .add("idpenagihan", getIdlogin)
                 .add("rfid", rfidId)
                 .add("idtagihan", idTagihanString)
                 .build();
@@ -330,6 +352,7 @@ public class PembayaranActivity extends AppCompatActivity {
         });
     }
     private void printTest() {
+
         try {
             SharedPreferences sp = getSharedPreferences("printer", MODE_PRIVATE);
             String mac = sp.getString("mac", null);
@@ -341,47 +364,92 @@ public class PembayaranActivity extends AppCompatActivity {
 
             BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
             BluetoothDevice device = adapter.getRemoteDevice(mac);
-
             BluetoothConnection connection = new BluetoothConnection(device);
 
             EscPosPrinter printer =
                     new EscPosPrinter(connection, 203, 48f, 32);
+
             String tanggalRealtime = new SimpleDateFormat(
                     "dd-MM-yyyy HH:mm",
                     Locale.getDefault()
             ).format(new Date());
+
+            // ================= PRINT 1 (CUSTOMER) =================
             printer.printFormattedText(
-                    "[C]<b><font size='big'>"+namawifi+"</font></b>\n" +
+                    "[C]<b><font size='big'>" + namawifi + "</font></b>\n" +
                             "[C]Internet Cepat & Stabil\n" +
-                            "[C]WA : "+nomerhpku+"\n" +
+                            "[C]WA : " + nomerhpku + "\n" +
+                            "[C]================================\n" +
+
+                            "[C]<b>NOTA CUSTOMER</b>\n" +
+                            "[C]================================\n" +
+
+                            "[L]Nama      : " + notanama + "\n" +
+                            "[L]Alamat    : " + notaalamat + "\n" +
+                            "[L]Paket     : " + notapaket + "\n" +
                             "[C]--------------------------------\n" +
 
-                            "[L]Nama      : "+notanama+"\n" +
-                            "[L]Alamat    : "+notaalamat+"\n" +
-                            "[L]paket     : "+notapaket+"\n" +
+                            "[L]" + notaperiode + "\n" +
                             "[C]--------------------------------\n" +
 
-                            "[L]"+notaperiode+"\n" +
-                            "[C]--------------------------------\n" +
-
-                            "[L]<b>"+notatotal+"</b>\n" +
+                            "[L]<b>" + notatotal + "</b>\n" +
                             "[L]STATUS    : <b>LUNAS</b>\n" +
                             "[C]--------------------------------\n" +
 
-                            "[L]Tanggal   : " + tanggalRealtime +"\n" +
-                            "[L]Kasir     : "+namaku+"\n" +
-                            "[C]--------------------------------\n" +
+                            "[L]Tanggal   : " + tanggalRealtime + "\n" +
+                            "[L]Kasir     : " + namaku + "\n" +
+                            "[C]================================\n" +
 
-                            "[C]Terima kasih atas pembayaran\n" +
-                            "[C]Simpan nota ini sebagai\n" +
-                            "[C]bukti resmi\n\n\n"
+                            "[C]Terima kasih atas pembayaran\n\n\n"
             );
 
+            // ================= DELAY 10 DETIK =================
+            new android.os.Handler().postDelayed(() -> {
+
+                try {
+
+                    EscPosPrinter printer2 =
+                            new EscPosPrinter(connection, 203, 48f, 32);
+
+                    printer2.printFormattedText(
+                            "[C]<b><font size='big'>" + namawifi + "</font></b>\n" +
+                                    "[C]================================\n" +
+
+                                    "[L]Nama      : " + notanama + "\n" +
+                                    "[L]Alamat    : " + notaalamat + "\n" +
+                                    "[L]Paket     : " + notapaket + "\n" +
+                                    "[C]--------------------------------\n" +
+
+                                    "[L]" + notaperiode + "\n" +
+                                    "[C]--------------------------------\n" +
+
+                                    "[L]<b>" + notatotal + "</b>\n" +
+                                    "[L]STATUS    : <b>LUNAS</b>\n" +
+                                    "[C]--------------------------------\n" +
+
+                                    "[L]Tanggal   : " + tanggalRealtime + "\n" +
+                                    "[L]Kasir     : " + namaku + "\n" +
+                                    "[C]================================\n" +
+
+                                    "[C]ARSIP PEMBUKUAN\n\n\n"
+                    );
+
+                } catch (Exception e) {
+                    Toast.makeText(this,
+                            "Gagal print copy kasir",
+                            Toast.LENGTH_SHORT).show();
+                }
+
+            }, 10000); // 10 detik (10000 ms)
+
         } catch (Exception e) {
-            Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            Toast.makeText(this,
+                    "Error: " + e.getMessage(),
+                    Toast.LENGTH_LONG).show();
             e.printStackTrace();
         }
     }
+
     private void kosongkanForm() {
         textNama.setText("");
         textNo.setText("");
@@ -420,11 +488,19 @@ public class PembayaranActivity extends AppCompatActivity {
             finish();
 
         }   else {
+            String akses = GlobalHelper.getakses(this);
+               if(akses.equals("kangtagih")){
+                   Intent intent = new Intent(this, KangtagihActivity.class);
+                   intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                   startActivity(intent);
+                   finish();
+               }else {
+                   Intent intent = new Intent(this, ManajemenPenagihan.class);
+                   intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                   startActivity(intent);
+                   finish();
+               }
 
-            Intent intent = new Intent(this, ManajemenPenagihan.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
-            finish();
         }
     }
 

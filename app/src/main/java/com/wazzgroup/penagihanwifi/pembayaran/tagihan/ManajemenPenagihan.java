@@ -20,10 +20,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.wazzgroup.penagihanwifi.GlobalHelper;
+import com.wazzgroup.penagihanwifi.KangtagihActivity;
 import com.wazzgroup.penagihanwifi.R;
 import com.wazzgroup.penagihanwifi.TeknisiActivity;
+import com.wazzgroup.penagihanwifi.helper.TokenAuthenticator;
+import com.wazzgroup.penagihanwifi.helper.TokenInterceptor;
 import com.wazzgroup.penagihanwifi.pembayaran.MenuPembayaranActivity;
 import com.wazzgroup.penagihanwifi.pembayaran.PembayaranActivity;
+import com.wazzgroup.penagihanwifi.pembayaran.map.MapListTagihan;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -31,11 +35,12 @@ import org.osmdroid.config.Configuration;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Objects;
 
 import okhttp3.*;
 
 public class ManajemenPenagihan extends AppCompatActivity {
-    String url = GlobalHelper.BASE_URL;
+    String url = GlobalHelper.BASE_URL_V2;
 
     private ListView listView;
     private EditText searchBox;
@@ -60,6 +65,10 @@ public class ManajemenPenagihan extends AppCompatActivity {
         ConstraintLayout btnPilihLokasiOdp = findViewById(R.id.tombolrfid);
 
         btnPilihLokasiOdp.setOnClickListener(v ->  startActivity(new Intent(this, PembayaranActivity.class)));
+
+        ConstraintLayout mapku = findViewById(R.id.mapnya);
+
+        mapku.setOnClickListener(v ->  startActivity(new Intent(this, MapListTagihan.class)));
 
         listView = findViewById(R.id.listTagihan);
         searchBox = findViewById(R.id.searchBox);
@@ -171,7 +180,10 @@ public class ManajemenPenagihan extends AppCompatActivity {
 
     }
     private void cariTagihan(String keyword) {
-        OkHttpClient client = new OkHttpClient();
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new TokenInterceptor(this))
+                .authenticator(new TokenAuthenticator(this))
+                .build();
         String iduserr = GlobalHelper.getIdUser(this);
 
         RequestBody formBody = new FormBody.Builder()
@@ -187,7 +199,7 @@ public class ManajemenPenagihan extends AppCompatActivity {
 
         client.newCall(request).enqueue(new Callback() {
             @Override public void onFailure(Call call, IOException e) {
-                runOnUiThread(() -> Toast.makeText(ManajemenPenagihan.this, "Gagal cari data", Toast.LENGTH_SHORT).show());
+                runOnUiThread(() -> Toast.makeText(ManajemenPenagihan.this, "Gagal cari data" + e.getMessage(), Toast.LENGTH_SHORT).show());
             }
 
             @Override public void onResponse(Call call, Response response) throws IOException {
@@ -227,8 +239,12 @@ public class ManajemenPenagihan extends AppCompatActivity {
     }
 
     private void ambilDataTagihan() {
-        OkHttpClient client = new OkHttpClient();
+
         String iduserr = GlobalHelper.getIdUser(this);
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new TokenInterceptor(this))
+                .authenticator(new TokenAuthenticator(this))
+                .build();
 
         RequestBody formBody = new FormBody.Builder()
                 .add("api", "belum_bayar")
@@ -242,7 +258,7 @@ public class ManajemenPenagihan extends AppCompatActivity {
 
         client.newCall(request).enqueue(new Callback() {
             @Override public void onFailure(Call call, IOException e) {
-                runOnUiThread(() -> Toast.makeText(ManajemenPenagihan.this, "Gagal ambil data", Toast.LENGTH_SHORT).show());
+                runOnUiThread(() -> Toast.makeText(ManajemenPenagihan.this, "Gagal ambil data" + e.getMessage(), Toast.LENGTH_SHORT).show());
             }
 
             @Override public void onResponse(Call call, Response response) throws IOException {
@@ -251,7 +267,6 @@ public class ManajemenPenagihan extends AppCompatActivity {
                     try {
                         JSONObject json = new JSONObject(hasil);
                         JSONArray data = json.getJSONArray("data");
-
                         listData.clear();
 
                         for (int i = 0; i < data.length(); i++) {
@@ -279,10 +294,21 @@ public class ManajemenPenagihan extends AppCompatActivity {
                 });
             }
         });
-    }private void kembaliKeList() {
-        Intent intent = new Intent(this, MenuPembayaranActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
-        finish();
+    }
+    private void kembaliKeList() {
+        Intent intent = getIntent();
+        String darihalaman = intent.getStringExtra("darihalaman");
+        if(Objects.equals(darihalaman, "kangtagih")){
+            Intent intent1 = new Intent(this, KangtagihActivity.class);
+            intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent1);
+            finish();
+        }else{
+            Intent intent1 = new Intent(this, MenuPembayaranActivity.class);
+            intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent1);
+            finish();
+        }
+
     }
 }

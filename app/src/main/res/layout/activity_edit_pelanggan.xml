@@ -13,9 +13,7 @@
         android:id="@+id/constraintLayout5"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="80dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginTop="60dp"
         android:layout_marginBottom="16dp"
         android:background="@drawable/cr8bd9d9d9"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -103,7 +101,6 @@
                 android:layout_margin="10dp"
                 android:layout_marginTop="16dp"
                 android:background="@drawable/edittext_border_blue"
-                android:backgroundTint="@color/background"
                 android:inputType="text"
 
                 android:popupBackground="@android:drawable/editbox_background"
@@ -118,7 +115,6 @@
                 android:layout_margin="10dp"
                 android:layout_marginTop="16dp"
                 android:background="@drawable/edittext_border_blue"
-                android:backgroundTint="@color/background"
 
                 android:inputType="text"
 
@@ -265,7 +261,6 @@
             android:layout_height="38dp"
             android:layout_marginTop="16dp"
             android:background="@drawable/edittext_border_blue"
-            android:backgroundTint="@color/background"
             android:inputType="text"
 
             android:popupBackground="@android:drawable/editbox_background"
@@ -331,11 +326,13 @@
         android:id="@+id/textView4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
         android:text="Edit Pelanggan"
-        android:textColor="#000000"
-        android:textSize="16sp"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteX="152dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

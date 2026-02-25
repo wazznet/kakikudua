@@ -23,6 +23,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.wazzgroup.penagihanwifi.GlobalHelper;
 import com.wazzgroup.penagihanwifi.R;
+import com.wazzgroup.penagihanwifi.helper.TokenAuthenticator;
+import com.wazzgroup.penagihanwifi.helper.TokenInterceptor;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -42,7 +44,7 @@ import okhttp3.Response;
 public class SettingPaketActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private Adapter adapter;
-    private String url = GlobalHelper.BASE_URL;
+    private String url = GlobalHelper.BASE_URL_V2;
     private List<Class> areaList = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,7 +117,11 @@ public class SettingPaketActivity extends AppCompatActivity {
         fetchArea();
     }
     private void tambahPaketKeApi(String namaArea,int harga) {
-        OkHttpClient client = new OkHttpClient();
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new TokenInterceptor(this))
+                .authenticator(new TokenAuthenticator(this))
+                .build();
+
 
         String iduserr = GlobalHelper.getIdUser(this);
         RequestBody formBody = new FormBody.Builder()
@@ -159,7 +165,11 @@ public class SettingPaketActivity extends AppCompatActivity {
         });
     }
     private void fetchArea() {
-        OkHttpClient client = new OkHttpClient();
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new TokenInterceptor(this))
+                .authenticator(new TokenAuthenticator(this))
+                .build();
+
 
         String iduserr = GlobalHelper.getIdUser(this);
         RequestBody formBody = new FormBody.Builder()

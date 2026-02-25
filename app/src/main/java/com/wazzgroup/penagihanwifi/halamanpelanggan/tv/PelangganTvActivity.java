@@ -1,8 +1,11 @@
 package com.wazzgroup.penagihanwifi.halamanpelanggan.tv;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -11,6 +14,7 @@ import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.wazzgroup.penagihanwifi.GlobalHelper;
 import com.wazzgroup.penagihanwifi.R;
+import com.wazzgroup.penagihanwifi.halamanpelanggan.PelangganActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -37,8 +41,11 @@ public class PelangganTvActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_pelanggan_tv); // Pastikan layout ini benar!
+        EdgeToEdge.enable(this);
 
+        setContentView(R.layout.activity_pelanggan_tv); // Pastikan layout ini benar!
+        ImageView kembali = findViewById(R.id.backtolist);
+        kembali.setOnClickListener(v -> kembaliKeList());
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -82,5 +89,11 @@ public class PelangganTvActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+    private void kembaliKeList() {
+        Intent intent = new Intent(this, PelangganActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        finish();
     }
 }

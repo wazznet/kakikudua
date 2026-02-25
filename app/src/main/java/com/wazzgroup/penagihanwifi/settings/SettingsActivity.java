@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -14,9 +15,13 @@ import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.wazzgroup.penagihanwifi.GlobalHelper;
+import com.wazzgroup.penagihanwifi.KangtagihActivity;
 import com.wazzgroup.penagihanwifi.LoginActivity;
 import com.wazzgroup.penagihanwifi.R;
 import com.wazzgroup.penagihanwifi.TeknisiActivity;
+import com.wazzgroup.penagihanwifi.helper.TokenAuthenticator;
+import com.wazzgroup.penagihanwifi.helper.TokenInterceptor;
+import com.wazzgroup.penagihanwifi.pembayaran.tagihan.ManajemenPenagihan;
 import com.wazzgroup.penagihanwifi.settings.printer.PrinterSettingActivity;
 
 import android.widget.Toast;
@@ -77,12 +82,27 @@ public class SettingsActivity extends AppCompatActivity {
         }
 
         );
+        TextView tombolarea = findViewById(R.id.tombolarea);
+        TextView paket = findViewById(R.id.paket);
+        TextView tombolsub = findViewById(R.id.tombolsub);
+        TextView tombollain = findViewById(R.id.tombollain);
+        String aksess = GlobalHelper.getakses(this);
+        if(aksess.equals("kangtagih")){
+            tombolarea.setVisibility(View.GONE);
+            paket.setVisibility(View.GONE);
+            tombolsub.setVisibility(View.GONE);
+            tombollain.setVisibility(View.GONE);
 
+        }
     }
     private void logout() {
-        String url = GlobalHelper.BASE_URL;
-        OkHttpClient client = new OkHttpClient();
-        String iduserr = GlobalHelper.getIdUser(this);
+        String url = GlobalHelper.BASE_URL_V2;
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new TokenInterceptor(this))
+                .authenticator(new TokenAuthenticator(this))
+                .build();
+
+        String iduserr = GlobalHelper.getIdlogin(this);
         String manufacturer = Build.MANUFACTURER;
         String model = Build.MODEL;
         String version = Build.VERSION.RELEASE; // Versi Android
@@ -116,7 +136,7 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String json = response.body().string();
-
+                Log.d("API_DEBUG", "BODY: " + json);
                 runOnUiThread(() -> {
                     try {
                         JSONObject obj = new JSONObject(json);
@@ -150,9 +170,17 @@ public class SettingsActivity extends AppCompatActivity {
         }
     }
     private void kembaliKeList() {
-        Intent intent = new Intent(this, TeknisiActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
-        finish();
+        String akses = GlobalHelper.getakses(this);
+        if(akses.equals("kangtagih")){
+            Intent intent = new Intent(this, KangtagihActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            finish();
+        }else {
+            Intent intent = new Intent(this, TeknisiActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            finish();
+        }
     }
 }

@@ -16,6 +16,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.gson.Gson;
 import com.wazzgroup.penagihanwifi.GlobalHelper;
 import com.wazzgroup.penagihanwifi.R;
+import com.wazzgroup.penagihanwifi.helper.TokenAuthenticator;
+import com.wazzgroup.penagihanwifi.helper.TokenInterceptor;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -53,7 +55,7 @@ public class DetailOdpActivity extends AppCompatActivity {
     private boolean isLastPelanggan = false;
     private boolean isLastOdp = false;
 
-    String url = GlobalHelper.BASE_URL;
+    String url = GlobalHelper.BASE_URL_V2;
     lapangan o;
 
     @Override
@@ -131,7 +133,10 @@ public class DetailOdpActivity extends AppCompatActivity {
     private void ambilDataOdp(int start, String id) {
         isLoadingOdp = true;
 
-        OkHttpClient client = new OkHttpClient();
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new TokenInterceptor(this))
+                .authenticator(new TokenAuthenticator(this))
+                .build();
         String idUser = GlobalHelper.getIdUser(this);
 
         RequestBody formBody = new FormBody.Builder()
@@ -190,7 +195,10 @@ public class DetailOdpActivity extends AppCompatActivity {
     private void ambilDataPelanggan(int start, String id) {
         isLoadingPelanggan = true;
 
-        OkHttpClient client = new OkHttpClient();
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new TokenInterceptor(this))
+                .authenticator(new TokenAuthenticator(this))
+                .build();
         String idUser = GlobalHelper.getIdUser(this);
 
         RequestBody formBody = new FormBody.Builder()

@@ -35,6 +35,8 @@ import com.google.android.gms.common.api.ResolvableApiException;
 import com.wazzgroup.penagihanwifi.GlobalHelper;
 import com.wazzgroup.penagihanwifi.R;
 import com.wazzgroup.penagihanwifi.TeknisiActivity;
+import com.wazzgroup.penagihanwifi.helper.TokenAuthenticator;
+import com.wazzgroup.penagihanwifi.helper.TokenInterceptor;
 
 import android.content.Intent;
 import android.app.Activity;
@@ -59,8 +61,7 @@ public class MapActivity extends AppCompatActivity {
     private TextView koordinatText;
     private JSONArray dataODP;
     private HashMap<String, GeoPoint> odpPoints = new HashMap<>();
-    private OkHttpClient client = new OkHttpClient();
-    private FusedLocationProviderClient fusedLocationClient;
+     private FusedLocationProviderClient fusedLocationClient;
     private boolean modeUpdatePelanggan = false;
     private GeoPoint lokasiPelangganBaru;
     String iduserr;
@@ -78,12 +79,7 @@ public class MapActivity extends AppCompatActivity {
         mapView = findViewById(R.id.mapView);
         koordinatText = findViewById(R.id.koordinatText);
 
-        Button btnUpdatePelanggan = findViewById(R.id.updatelokasi);
 
-        btnUpdatePelanggan.setOnClickListener(v -> {
-            modeUpdatePelanggan = true;
-            Toast.makeText(this, "Klik lokasi baru pelanggan di peta", Toast.LENGTH_SHORT).show();
-        });
 
         mapView.setTileSource(TileSourceFactory.MAPNIK);
         mapView.setMultiTouchControls(true);
@@ -100,7 +96,7 @@ public class MapActivity extends AppCompatActivity {
 
                 if (modeUpdatePelanggan) {
                     lokasiPelangganBaru = (GeoPoint) mapView.getProjection().fromPixels((int) event.getX(), (int) event.getY());
-                    bukaDialogUpdatePelanggan();
+
                     modeUpdatePelanggan = false;
                     return true;
                 }
@@ -202,93 +198,13 @@ public class MapActivity extends AppCompatActivity {
         }
     }
 
-    private void bukaDialogUpdatePelanggan() {
-        View view = getLayoutInflater().inflate(R.layout.dialog_update_pelanggan, null);
 
-        Spinner spinnerPelanggan = view.findViewById(R.id.spinnerPelanggan);
-        Spinner spinnerODP = view.findViewById(R.id.spinnerODP);
-
-        ArrayList<String> listIdPelanggan = new ArrayList<>();
-        ArrayList<String> listNamaPelanggan = new ArrayList<>();
-
-        ArrayList<String> listIdODP = new ArrayList<>();
-        ArrayList<String> listNamaODP = new ArrayList<>();
-
-        // Ambil data pelanggan & ODP dari dataODP (yang sudah ada di map)
-        try {
-            for (int i = 0; i < dataODP.length(); i++) {
-                JSONObject obj = dataODP.getJSONObject(i);
-                String id = obj.getString("id");
-                String nama = obj.getString("nama");
-                String sumber = obj.getString("sumber");
-
-                if (sumber.equalsIgnoreCase("pelanggan")) {
-                    listIdPelanggan.add(id);
-                    listNamaPelanggan.add(nama);
-                } else {
-                    listIdODP.add(id);
-                    listNamaODP.add(nama);
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        spinnerPelanggan.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, listNamaPelanggan));
-        ArrayList<String> listODPDisplay = new ArrayList<>();
-        for (int i = 0; i < listIdODP.size(); i++) {
-            String gabung = listIdODP.get(i) + " - " + listNamaODP.get(i);
-            listODPDisplay.add(gabung);
-        }
-
-        spinnerODP.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, listODPDisplay));
-
-        new androidx.appcompat.app.AlertDialog.Builder(this)
-                .setTitle("Update Lokasi Pelanggan")
-                .setView(view)
-                .setPositiveButton("Update", (dialog, which) -> {
-
-                    String idPelanggan = listIdPelanggan.get(spinnerPelanggan.getSelectedItemPosition());
-                    String idODP = listIdODP.get(spinnerODP.getSelectedItemPosition());
-
-                    kirimUpdatePelanggan(idPelanggan, idODP, lokasiPelangganBaru.getLatitude(), lokasiPelangganBaru.getLongitude());
-
-                })
-                .setNegativeButton("Batal", null)
-                .show();
-    }
-    private void kirimUpdatePelanggan(String idPelanggan, String idODP, double lat, double lon) {
-        RequestBody formBody = new FormBody.Builder()
-                .add("api", "update_lokasi_pelanggan")
-                .add("id_pelanggan", idPelanggan)
-                .add("terhubung_ke", idODP)
-                .add("latitude", String.valueOf(lat))
-                .add("longitude", String.valueOf(lon))
-                .build();
-
-        Request request = new Request.Builder()
-                .url(url)
-                .post(formBody)
-                .build();
-
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                runOnUiThread(() -> Toast.makeText(MapActivity.this, "Gagal update: " + e.getMessage(), Toast.LENGTH_SHORT).show());
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                runOnUiThread(() -> {
-                    Toast.makeText(MapActivity.this, "Update berhasil", Toast.LENGTH_SHORT).show();
-                    tampilkanODP(); // Refresh peta
-                });
-            }
-        });
-    }
 
     private void tampilkanODP() {
-
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new TokenInterceptor(this))
+                .authenticator(new TokenAuthenticator(this))
+                .build();
         RequestBody formBody = new FormBody.Builder()
                 .add("api", "map") // atau ganti sesuai kebutuhan Anda
                 .add("user", iduserr)

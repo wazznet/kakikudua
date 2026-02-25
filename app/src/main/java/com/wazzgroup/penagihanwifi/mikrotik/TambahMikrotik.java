@@ -27,6 +27,8 @@ import com.wazzgroup.penagihanwifi.bot.BotPenagihanActivity;
 import com.wazzgroup.penagihanwifi.bot.bot;
 import com.wazzgroup.penagihanwifi.bot.whatsappActivity;
 import com.wazzgroup.penagihanwifi.client.EditPelangganActivity;
+import com.wazzgroup.penagihanwifi.helper.TokenAuthenticator;
+import com.wazzgroup.penagihanwifi.helper.TokenInterceptor;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -54,7 +56,7 @@ public class TambahMikrotik extends AppCompatActivity {
     private boolean isLoading = false;
     private boolean isLastPage = false;
     private boolean isSearching = false;
-    String url = GlobalHelper.BASE_URL;
+    String url = GlobalHelper.BASE_URL_V2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -261,7 +263,10 @@ public class TambahMikrotik extends AppCompatActivity {
     private void ambilDataPelanggan(int start) {
         isLoading = true;
 
-        OkHttpClient client = new OkHttpClient();
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new TokenInterceptor(this))
+                .authenticator(new TokenAuthenticator(this))
+                .build();
         String iduserr = GlobalHelper.getIdUser(this);
 
         RequestBody formBody = new FormBody.Builder()

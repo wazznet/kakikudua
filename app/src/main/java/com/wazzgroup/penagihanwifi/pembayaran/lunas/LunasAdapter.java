@@ -35,9 +35,9 @@ public class LunasAdapter extends ArrayAdapter<TagihanBelumLunas> {
         TextView paket = convertView.findViewById(R.id.txtPaket);
         TextView total = convertView.findViewById(R.id.txtTotal);
         TextView no = convertView.findViewById(R.id.nomer);
-
+        paket.setText((t.update_at == "null" || t.update_at.isEmpty()) ? "kasir: " + t.nama_penagih : ("Tanggal lunas: " + t.update_at) + " \n kasir: " + t.nama_penagih);
         nama.setText((position + 1) + "."+ t.nama);
-        paket.setText("Tanggal penagihan: " + t.tanggalpenagihan + " | Area: " + t.nama_area);
+       // paket.setText("Tanggal lunas: " + t.update_at + " \n kasir: " + t.nama_penagih);
         total.setText("Tagihan: Rp" + t.totalTagihan + " (" + t.rincianBulan + ")");
         no.setText(t.hp);
 

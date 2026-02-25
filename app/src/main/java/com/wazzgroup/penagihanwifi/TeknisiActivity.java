@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -19,6 +20,8 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import com.wazzgroup.penagihanwifi.acs.AcskuActivity;
 import com.wazzgroup.penagihanwifi.bot.BotPenagihanActivity;
 import com.wazzgroup.penagihanwifi.client.ClientActivity;
+import com.wazzgroup.penagihanwifi.helper.TokenAuthenticator;
+import com.wazzgroup.penagihanwifi.helper.TokenInterceptor;
 import com.wazzgroup.penagihanwifi.komplen.KomplainActivity;
 import com.wazzgroup.penagihanwifi.map.LapanganActivity;
 import com.wazzgroup.penagihanwifi.map.MapActivity;
@@ -239,11 +242,18 @@ public class TeknisiActivity extends AppCompatActivity {
         }).start();
     }
     private void ceksaldo() {
-                String url = GlobalHelper.BASE_URL;
-                OkHttpClient client = new OkHttpClient();
+
+        String url = GlobalHelper.BASE_URL_V2;
         String iduserr = GlobalHelper.getIdUser(this);
+
+        // PAKAI CLIENT YANG SUDAH ADA TOKEN & AUTO REFRESH
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new TokenInterceptor(this))
+                .authenticator(new TokenAuthenticator(this))
+                .build();
+
         RequestBody formBody = new FormBody.Builder()
-                .add("api", "banyaknotif") // Pastikan API PHP mendukung login dengan ID
+                .add("api", "banyaknotif")
                 .add("user", iduserr)
                 .build();
 
@@ -253,56 +263,74 @@ public class TeknisiActivity extends AppCompatActivity {
                 .build();
 
         client.newCall(request).enqueue(new Callback() {
+
             @Override
             public void onFailure(Call call, IOException e) {
                 runOnUiThread(() ->
-                        Toast.makeText(TeknisiActivity.this, "Gagal koneksi: " + e.getMessage(), Toast.LENGTH_SHORT).show()
+                        Toast.makeText(TeknisiActivity.this,
+                                "Gagal koneksi: " + e.getMessage(),
+                                Toast.LENGTH_SHORT).show()
                 );
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                String json = response.body().string();
+
+                int code = response.code();
+                String bodyString = response.body() != null ? response.body().string() : "";
+
+                // 🔥 LOG DEBUG
+//                Log.d("API_DEBUG", "HTTP CODE: " + code);
+//                Log.d("API_DEBUG", "BODY: " + bodyString);
+
+                if (!response.isSuccessful()) {
+
+                    runOnUiThread(() ->
+                            Toast.makeText(TeknisiActivity.this,
+                                    "Server error: " + code,
+                                    Toast.LENGTH_SHORT).show()
+                    );
+                    return;
+                }
 
                 runOnUiThread(() -> {
                     try {
-                        JSONObject obj = new JSONObject(json);
+
+                        JSONObject obj = new JSONObject(bodyString);
+
                         if (obj.getString("status").equals("success")) {
-                            String belumlunas = obj.getString("belumlunas");
-                           // String totalpelanggan = obj.getString("totalpelanggan");
-                            String komplen = obj.getString("komplen");
-                            String pemasukan = obj.getString("pemasukan");
-                            String pengeluarantotal = obj.getString("pengeluaran");
-                            String munggak = obj.getString("munggak");
-                            String telat = obj.getString("telat");
 
+                            String belumlunas = obj.optString("belumlunas", "0");
+                            String komplen = obj.optString("komplen", "0");
+                            String pemasukan = obj.optString("pemasukan", "0");
+                            String pengeluarantotal = obj.optString("pengeluaran", "0");
+                            String munggak = obj.optString("munggak", "0");
+                            String telat = obj.optString("telat", "0");
 
-                            int pemasukanInt = Integer.parseInt(pemasukan); // Ubah ke int
-                            NumberFormat formatRupiah = NumberFormat.getNumberInstance(new Locale("in", "ID"));
-                            String pemasukanku = "Rp. " + formatRupiah.format(pemasukanInt);
-                            pemasukann.setText(pemasukanku);
+                            NumberFormat formatRupiah =
+                                    NumberFormat.getNumberInstance(new Locale("in", "ID"));
 
-                                int pengeluaranInt = Integer.parseInt(pengeluarantotal); // Ubah ke int
-                                 String pengeluaranIntku = "Rp. " + formatRupiah.format(pengeluaranInt);
-                            pengeluaranIntn.setText(pengeluaranIntku);
-    //
+                            int pemasukanInt = Integer.parseInt(pemasukan);
+                            pemasukann.setText("Rp. " + formatRupiah.format(pemasukanInt));
+
+                            int pengeluaranInt = Integer.parseInt(pengeluarantotal);
+                            pengeluaranIntn.setText("Rp. " + formatRupiah.format(pengeluaranInt));
+
                             int belumlunasInt = Integer.parseInt(belumlunas);
                             int telatInt = Integer.parseInt(telat);
                             int munggakInt = Integer.parseInt(munggak);
-                           // int totalpelangganInt = Integer.parseInt(totalpelanggan);
                             int komplenInt = Integer.parseInt(komplen);
 
                             tagihanku.setText(String.valueOf(belumlunasInt));
                             telatku.setText(String.valueOf(telatInt));
                             nunggakku.setText(String.valueOf(munggakInt));
+
                             if (belumlunasInt > 0) {
                                 nnunggak.setText(String.valueOf(belumlunasInt));
                                 nnunggak.setVisibility(View.VISIBLE);
                             } else {
                                 nnunggak.setVisibility(View.GONE);
                             }
-
-
 
                             if (komplenInt > 0) {
                                 nkomplen.setText(String.valueOf(komplenInt));
@@ -312,17 +340,109 @@ public class TeknisiActivity extends AppCompatActivity {
                             }
 
                         } else {
-                            Toast.makeText(TeknisiActivity.this, "Update gagal: ", Toast.LENGTH_SHORT).show();
 
+                            Toast.makeText(TeknisiActivity.this,
+                                    "Update gagal: " + obj.optString("message"),
+                                    Toast.LENGTH_SHORT).show();
                         }
-                    } catch (JSONException e) {
+
+                    } catch (Exception e) {
                         e.printStackTrace();
-                        Toast.makeText(TeknisiActivity.this, "Gagal parsing data", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(TeknisiActivity.this,
+                                "Gagal parsing data",
+                                Toast.LENGTH_SHORT).show();
                     }
                 });
             }
+
         });
     }
+
+    //    private void ceksaldo() {
+//                String url = GlobalHelper.BASE_URL;
+//                OkHttpClient client = new OkHttpClient();
+//        String iduserr = GlobalHelper.getIdUser(this);
+//        RequestBody formBody = new FormBody.Builder()
+//                .add("api", "banyaknotif") // Pastikan API PHP mendukung login dengan ID
+//                .add("user", iduserr)
+//                .build();
+//
+//        Request request = new Request.Builder()
+//                .url(url)
+//                .post(formBody)
+//                .build();
+//
+//        client.newCall(request).enqueue(new Callback() {
+//            @Override
+//            public void onFailure(Call call, IOException e) {
+//                runOnUiThread(() ->
+//                        Toast.makeText(TeknisiActivity.this, "Gagal koneksi: " + e.getMessage(), Toast.LENGTH_SHORT).show()
+//                );
+//            }
+//
+//            @Override
+//            public void onResponse(Call call, Response response) throws IOException {
+//                String json = response.body().string();
+//
+//                runOnUiThread(() -> {
+//                    try {
+//                        JSONObject obj = new JSONObject(json);
+//                        if (obj.getString("status").equals("success")) {
+//                            String belumlunas = obj.getString("belumlunas");
+//                           // String totalpelanggan = obj.getString("totalpelanggan");
+//                            String komplen = obj.getString("komplen");
+//                            String pemasukan = obj.getString("pemasukan");
+//                            String pengeluarantotal = obj.getString("pengeluaran");
+//                            String munggak = obj.getString("munggak");
+//                            String telat = obj.getString("telat");
+//
+//
+//                            int pemasukanInt = Integer.parseInt(pemasukan); // Ubah ke int
+//                            NumberFormat formatRupiah = NumberFormat.getNumberInstance(new Locale("in", "ID"));
+//                            String pemasukanku = "Rp. " + formatRupiah.format(pemasukanInt);
+//                            pemasukann.setText(pemasukanku);
+//
+//                                int pengeluaranInt = Integer.parseInt(pengeluarantotal); // Ubah ke int
+//                                 String pengeluaranIntku = "Rp. " + formatRupiah.format(pengeluaranInt);
+//                            pengeluaranIntn.setText(pengeluaranIntku);
+//    //
+//                            int belumlunasInt = Integer.parseInt(belumlunas);
+//                            int telatInt = Integer.parseInt(telat);
+//                            int munggakInt = Integer.parseInt(munggak);
+//                           // int totalpelangganInt = Integer.parseInt(totalpelanggan);
+//                            int komplenInt = Integer.parseInt(komplen);
+//
+//                            tagihanku.setText(String.valueOf(belumlunasInt));
+//                            telatku.setText(String.valueOf(telatInt));
+//                            nunggakku.setText(String.valueOf(munggakInt));
+//                            if (belumlunasInt > 0) {
+//                                nnunggak.setText(String.valueOf(belumlunasInt));
+//                                nnunggak.setVisibility(View.VISIBLE);
+//                            } else {
+//                                nnunggak.setVisibility(View.GONE);
+//                            }
+//
+//
+//
+//                            if (komplenInt > 0) {
+//                                nkomplen.setText(String.valueOf(komplenInt));
+//                                nkomplen.setVisibility(View.VISIBLE);
+//                            } else {
+//                                nkomplen.setVisibility(View.GONE);
+//                            }
+//
+//                        } else {
+//                            Toast.makeText(TeknisiActivity.this, "Update gagal: ", Toast.LENGTH_SHORT).show();
+//
+//                        }
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                        Toast.makeText(TeknisiActivity.this, "Gagal parsing data", Toast.LENGTH_SHORT).show();
+//                    }
+//                });
+//            }
+//        });
+//    }
     @Override
     protected void onDestroy() {
         super.onDestroy();

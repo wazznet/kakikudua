@@ -52,6 +52,8 @@ import com.google.android.gms.location.LocationServices;
 import com.wazzgroup.penagihanwifi.GlobalHelper;
 import com.wazzgroup.penagihanwifi.R;
 import com.wazzgroup.penagihanwifi.TeknisiActivity;
+import com.wazzgroup.penagihanwifi.helper.TokenAuthenticator;
+import com.wazzgroup.penagihanwifi.helper.TokenInterceptor;
 import com.wazzgroup.penagihanwifi.lottie.LottieSuccessActivity;
 import com.wazzgroup.penagihanwifi.pembukuan.PembukuanTambahActivity;
 
@@ -69,7 +71,6 @@ public class TambahOdpActivity extends AppCompatActivity {
     private String rfidId = "";
     private List<String> listId = new ArrayList<>();
     private List<String> listId2 = new ArrayList<>();
-    private final OkHttpClient client = new OkHttpClient();
     private TextView txtKoordinat,textOdpDipilih,textOdpidDipilih;
     private FusedLocationProviderClient fusedLocationClient;
     private GeoPoint lokasiTerpilih = null;
@@ -79,7 +80,7 @@ public class TambahOdpActivity extends AppCompatActivity {
     private JSONArray dataODP;
     private LocationManager locationManager;
     String iduserr;
-    String url = GlobalHelper.BASE_URL;
+    String url = GlobalHelper.BASE_URL_V2;
     private String selectedPaketId = ""; // Untuk menyimpan ID paket yang dipilih
     private String paketTerpilihId = "";
     Spinner spinnerType, spinnerPort;
@@ -315,7 +316,11 @@ public class TambahOdpActivity extends AppCompatActivity {
     }
 
     private void ambilDataODPdanTampilkanMap(double latUser, double lonUser) {
-        OkHttpClient client = new OkHttpClient();
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new TokenInterceptor(this))
+                .authenticator(new TokenAuthenticator(this))
+                .build();
+
 
         RequestBody formBody = new FormBody.Builder()
                 .add("api", "odp")
@@ -481,6 +486,11 @@ public class TambahOdpActivity extends AppCompatActivity {
 
         String latitude = String.valueOf(lokasiTerpilih.getLatitude());
         String longitude = String.valueOf(lokasiTerpilih.getLongitude());
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new TokenInterceptor(this))
+                .authenticator(new TokenAuthenticator(this))
+                .build();
+
 
         Log.d("DATA_INPUT", "id jalur: " + idjalur +
                 ", type: " + type +

@@ -15,6 +15,8 @@ import android.widget.Toast;
 import com.wazzgroup.penagihanwifi.GlobalHelper;
 import com.wazzgroup.penagihanwifi.R;
 import com.wazzgroup.penagihanwifi.acs.AcskuActivity;
+import com.wazzgroup.penagihanwifi.helper.TokenAuthenticator;
+import com.wazzgroup.penagihanwifi.helper.TokenInterceptor;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -96,7 +98,11 @@ public class BotAdapter extends ArrayAdapter<bot> {
 
     private void cek(String idpelanggan, String isi) {
         String url = GlobalHelper.BASE_URL;
-        OkHttpClient client = new OkHttpClient();
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new TokenInterceptor(getContext()))
+                .authenticator(new TokenAuthenticator(getContext()))
+                .build();
+
         String iduserr = GlobalHelper.getIdUser(getContext());
 
         RequestBody formBody = new FormBody.Builder()

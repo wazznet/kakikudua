@@ -33,6 +33,8 @@ import com.wazzgroup.penagihanwifi.TeknisiActivity;
 import com.wazzgroup.penagihanwifi.R;
 import com.wazzgroup.penagihanwifi.client.DetailPelangganActivity;
 import com.wazzgroup.penagihanwifi.client.EditPelangganActivity;
+import com.wazzgroup.penagihanwifi.helper.TokenAuthenticator;
+import com.wazzgroup.penagihanwifi.helper.TokenInterceptor;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -65,7 +67,7 @@ public class LapanganActivity extends AppCompatActivity {
     private boolean isLoading = false;
     private boolean isLastPage = false;
     private boolean isSearching = false;
-    String url = GlobalHelper.BASE_URL;
+    String url = GlobalHelper.BASE_URL_V2;
     private AlertDialog dialogTambahJalur;
 
     @Override
@@ -190,7 +192,10 @@ public class LapanganActivity extends AppCompatActivity {
     }
 
     private void kirimJalurBaru(String namaJalur) {
-        OkHttpClient client = new OkHttpClient();
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new TokenInterceptor(this))
+                .authenticator(new TokenAuthenticator(this))
+                .build();
         String iduserr = GlobalHelper.getIdUser(this);
         RequestBody formBody = new FormBody.Builder()
                 .add("api", "tambah_jalur")
@@ -308,7 +313,10 @@ public class LapanganActivity extends AppCompatActivity {
         dialogTambahJalur.show();
     }
     private void Editjalur(String namaJalur,String id) {
-        OkHttpClient client = new OkHttpClient();
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new TokenInterceptor(this))
+                .authenticator(new TokenAuthenticator(this))
+                .build();
         String iduserr = GlobalHelper.getIdUser(this);
         RequestBody formBody = new FormBody.Builder()
                 .add("api", "edit_jalur")
@@ -358,7 +366,10 @@ public class LapanganActivity extends AppCompatActivity {
     private void ambilDataPelanggan(int start) {
         isLoading = true;
 
-        OkHttpClient client = new OkHttpClient();
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new TokenInterceptor(this))
+                .authenticator(new TokenAuthenticator(this))
+                .build();
         String iduserr = GlobalHelper.getIdUser(this);
 
         RequestBody formBody = new FormBody.Builder()
@@ -418,7 +429,10 @@ public class LapanganActivity extends AppCompatActivity {
     private void cariPelanggan(String keyword) {
         isLoading = true;
 
-        OkHttpClient client = new OkHttpClient();
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new TokenInterceptor(this))
+                .authenticator(new TokenAuthenticator(this))
+                .build();
         String iduserr = GlobalHelper.getIdUser(this);
         String url = GlobalHelper.BASE_URL;
 

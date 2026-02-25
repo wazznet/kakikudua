@@ -75,6 +75,21 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".KangtagihActivity"
+            android:exported="false" />
+        <activity
+            android:name=".pembayaran.map.MapListTagihan"
+            android:exported="false" />
+        <activity
+            android:name=".halamanpelanggan.quran.DetailSuratActivity"
+            android:exported="false" />
+        <activity
+            android:name=".halamanpelanggan.quran.ListSuratActivity"
+            android:exported="false" />
+        <activity
+            android:name=".halamanpelanggan.jadwal_sholat.JadwalSholatActivity"
+            android:exported="false" />
+        <activity
             android:name=".acs.ScanSnActivity"
             android:exported="false" />
         <activity

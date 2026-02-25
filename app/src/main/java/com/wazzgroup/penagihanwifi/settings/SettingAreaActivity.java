@@ -10,6 +10,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.wazzgroup.penagihanwifi.GlobalHelper;
 import com.wazzgroup.penagihanwifi.R;
+import com.wazzgroup.penagihanwifi.helper.TokenAuthenticator;
+import com.wazzgroup.penagihanwifi.helper.TokenInterceptor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +44,7 @@ public class SettingAreaActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private Adapter adapter;
     private List<Class> areaList = new ArrayList<>();
-    private String url = GlobalHelper.BASE_URL;
+    private String url = GlobalHelper.BASE_URL_V2;
 
 
     @Override
@@ -93,7 +95,10 @@ public class SettingAreaActivity extends AppCompatActivity {
         fetchArea();
     }
     private void tambahAreaKeApi(String namaArea) {
-        OkHttpClient client = new OkHttpClient();
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new TokenInterceptor(this))
+                .authenticator(new TokenAuthenticator(this))
+                .build();
 
         String iduserr = GlobalHelper.getIdUser(this);
         RequestBody formBody = new FormBody.Builder()
@@ -137,7 +142,10 @@ public class SettingAreaActivity extends AppCompatActivity {
     }
 
     private void fetchArea() {
-        OkHttpClient client = new OkHttpClient();
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new TokenInterceptor(this))
+                .authenticator(new TokenAuthenticator(this))
+                .build();
 
 
         String iduserr = GlobalHelper.getIdUser(this);

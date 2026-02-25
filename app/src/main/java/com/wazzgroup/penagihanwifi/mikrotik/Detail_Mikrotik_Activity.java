@@ -29,6 +29,8 @@ import com.wazzgroup.penagihanwifi.R;
 import com.wazzgroup.penagihanwifi.TeknisiActivity;
 import com.wazzgroup.penagihanwifi.bot.whatsappActivity;
 import com.wazzgroup.penagihanwifi.client.Pelanggan;
+import com.wazzgroup.penagihanwifi.helper.TokenAuthenticator;
+import com.wazzgroup.penagihanwifi.helper.TokenInterceptor;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -54,7 +56,7 @@ public class Detail_Mikrotik_Activity extends AppCompatActivity {
     private boolean isLastPage = false;
     private boolean isSearching = false;
     TextView namaText,uptime,cpu, ram , board,totalppp, pppon, pppoff;
-    String url = GlobalHelper.BASE_URL;
+    String url = GlobalHelper.BASE_URL_V2;
     private Handler handler = new Handler();
     private Runnable updater;
     private String id; // simpan id biar bisa dipakai di updater
@@ -126,7 +128,10 @@ public class Detail_Mikrotik_Activity extends AppCompatActivity {
     private void ambilDataDariApiDanTampilkan() {
         isLoading = true;
 
-        OkHttpClient client = new OkHttpClient();
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new TokenInterceptor(this))
+                .authenticator(new TokenAuthenticator(this))
+                .build();
         String iduserr = GlobalHelper.getIdUser(this);
 
         RequestBody formBody = new FormBody.Builder()
@@ -199,7 +204,10 @@ public class Detail_Mikrotik_Activity extends AppCompatActivity {
     private void datamikrotik(String id) {
         isLoading = true;
 
-        OkHttpClient client = new OkHttpClient();
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new TokenInterceptor(this))
+                .authenticator(new TokenAuthenticator(this))
+                .build();
         String iduserr = GlobalHelper.getIdUser(this);
 
         RequestBody formBody = new FormBody.Builder()
@@ -258,7 +266,10 @@ public class Detail_Mikrotik_Activity extends AppCompatActivity {
     private void ambilDataPelanggan() {
         isLoading = true;
 
-        OkHttpClient client = new OkHttpClient();
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new TokenInterceptor(this))
+                .authenticator(new TokenAuthenticator(this))
+                .build();
         String iduserr = GlobalHelper.getIdUser(this);
 
         RequestBody formBody = new FormBody.Builder()

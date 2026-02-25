@@ -30,6 +30,8 @@ import com.wazzgroup.penagihanwifi.client.ClientActivity;
 import com.wazzgroup.penagihanwifi.client.DetailPelangganActivity;
 import com.wazzgroup.penagihanwifi.client.EditPelangganActivity;
 import com.wazzgroup.penagihanwifi.client.Pelanggan;
+import com.wazzgroup.penagihanwifi.helper.TokenAuthenticator;
+import com.wazzgroup.penagihanwifi.helper.TokenInterceptor;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -59,7 +61,7 @@ public class ListOdpActivity extends AppCompatActivity {
     private boolean isLoading = false;
     private boolean isLastPage = false;
     private boolean isSearching = false;
-    String url = GlobalHelper.BASE_URL;
+    String url = GlobalHelper.BASE_URL_V2;
     lapangan o;
     String nama;
     @Override
@@ -266,7 +268,10 @@ public class ListOdpActivity extends AppCompatActivity {
                         // 👉 EKSEKUSI HAPUS DI SINI
                         dialog.dismiss();
 
-                        OkHttpClient client = new OkHttpClient();
+                        OkHttpClient client = new OkHttpClient.Builder()
+                                .addInterceptor(new TokenInterceptor(this))
+                                .authenticator(new TokenAuthenticator(this))
+                                .build();
                         String iduserr = GlobalHelper.getIdUser(this);
 
                         RequestBody formBody = new FormBody.Builder()
@@ -333,7 +338,10 @@ public class ListOdpActivity extends AppCompatActivity {
     private void ambilDataPelanggan(int start,String id) {
         isLoading = true;
 
-        OkHttpClient client = new OkHttpClient();
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new TokenInterceptor(this))
+                .authenticator(new TokenAuthenticator(this))
+                .build();
         String iduserr = GlobalHelper.getIdUser(this);
 
         RequestBody formBody = new FormBody.Builder()
@@ -403,7 +411,10 @@ public class ListOdpActivity extends AppCompatActivity {
     private void cariPelanggan(String keyword,String id) {
         isLoading = true;
 
-        OkHttpClient client = new OkHttpClient();
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new TokenInterceptor(this))
+                .authenticator(new TokenAuthenticator(this))
+                .build();
         String iduserr = GlobalHelper.getIdUser(this);
         String url = GlobalHelper.BASE_URL;
 

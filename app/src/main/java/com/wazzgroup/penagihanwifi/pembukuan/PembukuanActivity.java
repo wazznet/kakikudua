@@ -19,6 +19,8 @@ import androidx.core.view.WindowInsetsCompat;
 import com.wazzgroup.penagihanwifi.GlobalHelper;
 import com.wazzgroup.penagihanwifi.R;
 import com.wazzgroup.penagihanwifi.TeknisiActivity;
+import com.wazzgroup.penagihanwifi.helper.TokenAuthenticator;
+import com.wazzgroup.penagihanwifi.helper.TokenInterceptor;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -37,8 +39,7 @@ import okhttp3.Response;
 
 public class PembukuanActivity extends AppCompatActivity {
 
-    String url = GlobalHelper.BASE_URL;
-    private OkHttpClient client = new OkHttpClient();
+    String url = GlobalHelper.BASE_URL_V2;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,6 +55,12 @@ public class PembukuanActivity extends AppCompatActivity {
         ceksaldo();
     }
     private void ceksaldo() {
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new TokenInterceptor(this))
+                .authenticator(new TokenAuthenticator(this))
+                .build();
+
+
         String iduserr = GlobalHelper.getIdUser(this);
         RequestBody formBody = new FormBody.Builder()
                 .add("api", "pembukuan") // Pastikan API PHP mendukung login dengan ID

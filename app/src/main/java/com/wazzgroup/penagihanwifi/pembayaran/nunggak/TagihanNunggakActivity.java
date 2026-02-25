@@ -21,8 +21,11 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.wazzgroup.penagihanwifi.GlobalHelper;
+import com.wazzgroup.penagihanwifi.KangtagihActivity;
 import com.wazzgroup.penagihanwifi.R;
 import com.wazzgroup.penagihanwifi.TeknisiActivity;
+import com.wazzgroup.penagihanwifi.helper.TokenAuthenticator;
+import com.wazzgroup.penagihanwifi.helper.TokenInterceptor;
 import com.wazzgroup.penagihanwifi.pembayaran.MenuPembayaranActivity;
 import com.wazzgroup.penagihanwifi.pembayaran.PembayaranActivity;
 import com.wazzgroup.penagihanwifi.pembayaran.tagihan.ManajemenPenagihan;
@@ -35,6 +38,7 @@ import org.osmdroid.config.Configuration;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Objects;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -45,7 +49,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class TagihanNunggakActivity extends AppCompatActivity {
-    String url = GlobalHelper.BASE_URL;
+    String url = GlobalHelper.BASE_URL_V2;
 
     private ListView listView;
     private EditText searchBox;
@@ -180,7 +184,10 @@ public class TagihanNunggakActivity extends AppCompatActivity {
 
     }
     private void cariTagihan(String keyword) {
-        OkHttpClient client = new OkHttpClient();
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new TokenInterceptor(this))
+                .authenticator(new TokenAuthenticator(this))
+                .build();
         String iduserr = GlobalHelper.getIdUser(this);
 
         RequestBody formBody = new FormBody.Builder()
@@ -236,7 +243,10 @@ public class TagihanNunggakActivity extends AppCompatActivity {
     }
 
     private void ambilDataTagihan() {
-        OkHttpClient client = new OkHttpClient();
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new TokenInterceptor(this))
+                .authenticator(new TokenAuthenticator(this))
+                .build();
         String iduserr = GlobalHelper.getIdUser(this);
 
         RequestBody formBody = new FormBody.Builder()
@@ -288,10 +298,21 @@ public class TagihanNunggakActivity extends AppCompatActivity {
                 });
             }
         });
-    }private void kembaliKeList() {
-        Intent intent = new Intent(this, MenuPembayaranActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
-        finish();
+    }
+    private void kembaliKeList() {
+        Intent intent = getIntent();
+        String darihalaman = intent.getStringExtra("darihalaman");
+        if(Objects.equals(darihalaman, "kangtagih")){
+            Intent intent1 = new Intent(this, KangtagihActivity.class);
+            intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent1);
+            finish();
+        }else{
+            Intent intent1 = new Intent(this, MenuPembayaranActivity.class);
+            intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent1);
+            finish();
+        }
+
     }
 }
